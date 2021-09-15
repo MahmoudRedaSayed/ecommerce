@@ -31,6 +31,14 @@ $(function(){
     $(this).next().next().slideToggle(1000);
   })
 });
+$('i.up').each(function(){
+  $(this).click(()=>
+{
+  $(this).toggleClass("fa-arrow-circle-down");
+  $(this).toggleClass("fa-arrow-circle-up");
+  $(this).parent().next().slideToggle(1000);
+})
+});
 });
 
 

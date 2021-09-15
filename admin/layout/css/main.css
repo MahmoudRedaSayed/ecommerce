@@ -169,6 +169,7 @@ td.row{
 .states , .latest{
     margin: auto;
     justify-content: space-evenly;
+    row-gap: 1.5rem;
 }
 .states .h2-text{
     margin: 20px auto;
@@ -194,6 +195,14 @@ td.row{
     font-size: 2rem;
     font-weight: 600;
 }
+.panel{
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    overflow: hidden;
+}
 .panel:hover{
     box-shadow: 0 5px 5px #2c3e50;
 }
@@ -202,11 +211,53 @@ td.row{
     border-bottom: 2px solid #333;
     color: white;
     text-align: center;
+    padding: 10px;
+}
+.panel-heading .up {
+    cursor:pointer;
+    float: right;
+    margin-right: 5%;
+    margin-top: 5px;
 }
 .panel-body{
     background-color: whitesmoke;
     color: var(--maincolor);
     padding: 10px;
+    display:none;
+}
+.panel-body .com-data{
+    display:flex;
+    flex-wrap: wrap;
+   justify-content: space-around;
+}
+.panel-body .com-data div:nth-child(1){
+    color: #3498db;
+    font-size: 20px;
+}
+.panel-body .com-data div:nth-child(2){
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    position: relative;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+}
+.panel-body .com-data div:nth-child(2)::before{
+   content:"";
+   position:absolute;
+   left: -21px;
+    top: 4px;
+   width: 0;
+   height: 0;
+   border: 10px solid #fff;
+   border-left-color:transparent ;
+   border-top-color:transparent ;
+   border-bottom-color:transparent ;
+}
+.panel-body .com-data .com-con a{
+    margin: 0 20px ;
 }
 .panel-body ul{
     margin:0;

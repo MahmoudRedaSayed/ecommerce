@@ -24,14 +24,15 @@ if(isset($_SESSION['username']))
         </div>
         <div class="col-sm-11 col-md-5 col-lg-2 state">
             total comments<br>
-            <span>200</span>
+            <a href="comments.php"> <span><?php echo calcNums('c_id','comments');?></span></a>
         </div>
     </div>
     <div class='container row latest'>
-        <div class='col-sm-12 col-md-6 col-lg-6'>
+        <div class='col-sm-12 col-md-12 col-lg-12'>
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <i class="fa fa-users"></i> latest <?php echo $limit?> inserted users
+                    <i class="fas fa-arrow-circle-down up"></i>
                 </div>
                 <div class="panel-body">
                     <ul>
@@ -50,10 +51,11 @@ if(isset($_SESSION['username']))
                 </div>
             </div>
         </div>
-        <div class='col-sm-12 col-md-6 col-lg-6'>
+        <div class='col-sm-12 col-md-12 col-lg-12'>
             <div class="panel panel-default">
                 <div class="panel-heading">
                 <i class="far fa-newspaper"></i> latest <?php echo $limit?> items
+                <i class="fas fa-arrow-circle-down up"></i>
                 </div>
                 <div class="panel-body">
                     <ul>
@@ -72,7 +74,49 @@ if(isset($_SESSION['username']))
                 </div>
             </div>
         </div>
-    </div>
+    <div class='col-sm-12 col-md-12 col-lg-12 comments'>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                <i class="far fa-newspaper"></i> latest <?php echo $limit?> comments
+                <i class="fas fa-arrow-circle-down up"></i>
+                </div>
+                <div class="panel-body">
+                <?php
+                    $stmt=$con->prepare("SELECT  comments.* , users.username
+                                        FROM comments
+                                        INNER JOIN users 
+                                        ON users.userid=comments.member_id
+                                        ORDER by comments.c_id
+                                        LIMIT $limit ");
+                    $stmt->execute();
+                    // fetch all data like array
+                    $row=$stmt->fetchAll();
+                    $num=$stmt->rowcount();
+                    if($num!=0)
+                    {
+                        foreach($row as $comment)
+                        {
+                            echo"<div class='com-data'>";
+                            echo "<div> ".$comment['username']."</div>";
+                            echo "<div> ".$comment['comment'];
+                            echo" </div>";
+                            echo"<div class='com-con'>
+                            <a href='comments.php?do=edit&comid=".$comment['c_id']."'> 
+                            <span class='btn btn-success pull-right'>Edit <i class='fa fa-edit'></i></span></a>
+                            <a href='comments.php?do=delete&itemid=".$comment['c_id']."'> 
+                            <span class='btn btn-danger pull-right delete'>Delete <i class='fa fa-delete'></i></span></a>
+                            </div>";
+                            echo"</div> <hr>";
+                        }
+                    }
+                    else
+                    {
+                        echo"<div class='alert alert-info'>there is no comments to show</div>";
+                    }?>
+                </div>
+            </div>
+        </div>
+        </div>
     <?php
     include $tmp."/footer.php";
 }

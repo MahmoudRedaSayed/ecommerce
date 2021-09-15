@@ -280,13 +280,23 @@ iF(isset($_SESSION["username"]))
             }
             if(empty($Error))
             {
+                $stmt=$con->prepare("SELECT * FROM users  WHERE userid!=? and userpassword=? ");
+                    $stmt->execute([$userid,$password]);
+                    $CheckUserPass=$stmt->rowcount();
+                if($CheckUserPass==0)
+                {
                     $stmt=$con->prepare("UPDATE users SET username=? , fullname=? , email=? , userpassword=? WHERE userid=?");
                     $stmt->execute([$username,$fullname,$email,$password,$userid]);
                     $row=$stmt->rowcount();
                     echo "<div class='alert alert-success'>$row updated</div>";
                     header('Refresh:5;members.php');
                     exit();
-               
+                }
+                else
+                {
+                    echo"<div class='alert alert-info'>enter another password</div>";
+                    header("Refresh:5;members.php");
+                }
             }
             else
             {
@@ -336,9 +346,8 @@ iF(isset($_SESSION["username"]))
             }
             if(empty($Error))
             {
-                $CheckUserName=checkprepare('username','users',$username);
                 $CheckUserPass=checkprepare('userpassword','users',sha1($password));
-                if(($CheckUserName == 0 )&& ($CheckUserPass == 0))
+                if(($CheckUserPass == 0))
                 {
                     $stmt=$con->prepare("INSERT INTO users (username,userpassword,fullname,email,regstatus,userdate) VALUES (?,?,?,?,1,now())");
                     $stmt->execute([$username,sha1($password),$fullname,$email]);
@@ -348,10 +357,6 @@ iF(isset($_SESSION["username"]))
                 else
                 {
                     $arrError=array();
-                    if($CheckUserName>0)
-                    {
-                        $arrError[]="Please,Enter another username";
-                    }
                     if($CheckUserPass>0)
                     {
                         $arrError[]="Please,Enter another password";
