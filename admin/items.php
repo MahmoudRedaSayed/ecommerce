@@ -68,10 +68,10 @@ if(isset($_SESSION["username"]))
                                 }
                                 echo"</td>";
                                 // the links the lead to the delet or edit pages
-                                echo "<td class='row'><a class='edit btn btn-success col' href='members.php?do=edit&userid=".$row['itemid']."'><i class='fas fa-user-edit'></i> Edit</a><a class='delete btn btn-danger col' id='delete' href='members.php?do=delete&userid=".$row['itemid']."'><i class='fas fa-trash-alt'></i>Delete</a>";
+                                echo "<td class='row'><a class='edit btn btn-success col' href='items.php?do=edit&itemid=".$row['itemid']."'><i class='fas fa-user-edit'></i> Edit</a><a class='delete btn btn-danger col' id='delete' href='items.php?do=delete&itemid=".$row['itemid']."'><i class='fas fa-trash-alt'></i>Delete</a>";
                                 if($row['approve']!=1)
                                 {
-                                    echo "<a class='edit btn btn-primary col' href='members.php?do=approve&userid=".$row['itemid']."'><i class='fas fa-check'></i> approve</a>";
+                                    echo "<a class='edit btn btn-primary col' href='items.php?do=approve&itemid=".$row['itemid']."'><i class='fas fa-check'></i> approve</a>";
                                 }
                                 echo "</td>";
                                 echo"</tr>";
@@ -137,8 +137,8 @@ if(isset($_SESSION["username"]))
                                 }
                                 echo"</td>";
                                 // the links the lead to the delet or edit pages
-                                echo "<td class='row'><a class='edit btn btn-success col' href='members.php?do=edit&userid=".$row['itemid']."'><i class='fas fa-user-edit'></i> Edit</a><a class='delete btn btn-danger col' id='delete' href='members.php?do=delete&userid=".$row['itemid']."'><i class='fas fa-trash-alt'></i>Delete</a>";
-                                echo "<a class='edit btn btn-primary col' href='members.php?do=approve&userid=".$row['itemid']."'><i class='fas fa-check'></i> approve</a>";
+                                echo "<td class='row'><a class='edit btn btn-success col' href='items.php?do=edit&itemid=".$row['itemid']."'><i class='fas fa-user-edit'></i> Edit</a><a class='delete btn btn-danger col' id='delete' href='items.php?do=delete&itemid=".$row['itemid']."'><i class='fas fa-trash-alt'></i>Delete</a>";
+                                echo "<a class='edit btn btn-primary col' href='items.php?do=approve&itemid=".$row['itemid']."'><i class='fas fa-check'></i> approve</a>";
                                 echo "</td>";
                                 echo"</tr>";
                             }
@@ -154,100 +154,6 @@ if(isset($_SESSION["username"]))
             echo "<h2 class='h2-text text-center'>there is no items to show </h2>";
         }
         echo'</div>';
-    }
-    elseif($do=='edit')
-    {
-        echo"<div class='container Add'>";
-        if($_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET['itemid'])&&is_numeric($_GET['itemid']))
-        {
-            $itemid=intval($_GET['itemid']);
-            $stmt=$con->prepare("SELECT * FROM items WHERE itemid=$itemid");
-            $stmt->execute();
-            $row=$stmt->fetch();
-            $count=$stmt->rowcount();
-            if($count>0){
-               
-            ?>
-            <h2 class="text-center h2-text">edit Page</h2>
-            <hr>
-            <form class="container formreg" action="items.php?do=update&itemid=<?php echo $itemid;?>" method="POST">
-                <div class="des&name  row" >
-                    <div class="  col-md col-lg col-sm-12 havespan">
-                        <label  class="col-12 col-sm-12 text-center" id="itemname" for="itemname"></label>
-                        <input class="col-12 col-sm-12 form-control"  type="text" value="<?php echo $row['itemname'];?>" name='itemname' id="itemname" placeholder="item name" autocomplete="off">
-                    </div>
-                    <div class=" col-md col-lg col-sm-12 havespan">
-                        <label class="col-12 col-sm-12 text-center" for="descripation"></label>
-                        <input class="col-12 col-sm-12 form-control"  type="text" value="<?php echo $row['descripation'];?>"  name='descripation' id="descripation" placeholder="descripation to item">
-                    </div>
-                </div>
-                <div class="country&price row">
-                    <div class=" col-md col-lg col-sm-12 havespan">
-                            <label class="col-12 col-sm-12 text-center" for="price"></label>
-                            <input class="col-12 col-sm-12 form-control"   type="text" value="<?php echo $row['price'];?>"  name='price' id="price" placeholder="price of the item" >
-                        </div>
-                        <div class=" col-md col-lg col-sm-12 havespan">
-                            <label class="col-12 col-sm-12 text-center" for="country"></label>
-                            <input class="col-12 col-sm-12 form-control"   type="text" value="<?php echo $row['country_made'];?>"  name='country' id="country" placeholder="country make of the item" >
-                    </div>
-                </div>
-                <div class="stutes  row">
-                    <div class=" col-md-6 col-lg-6 col-sm-12 havespan-select row">
-                        <select class="col form-control" placeholder="stutes" name="stutes" required="required" >
-                            <option <?php if ( $row['stutes']==1)echo "selected ";?>value='1' >new</option>
-                            <option <?php if ( $row['stutes']==2)echo "selected ";?>value='2'>used</option>
-                            <option  <?php if ( $row['stutes']==3)echo "selected ";?>value='3'>old</option>
-                        </select>
-                    </div>
-                    <div class=" col-md-6 col-lg-6 col-sm-12 havespan-select row">
-                        <label class="col-12 col-sm-12 text-center" for="username"></label>
-                        <select class="col form-control" placeholder="user name" name="username" required="required">
-                            <?php
-                            $stmt=$con->prepare('SELECT * FROM users WHERE group_id!=1');
-                            $stmt->execute();
-                            $users=$stmt->fetchAll();
-                            foreach($users as $user)
-                            {
-                                echo '<option value="'.$user['userid'].'"';
-                                if($user['userid']==$row['member_id']) echo 'selected';
-                                echo '>'.$user['username'].'</option>';
-                            }
-                            ?>
-                        </select>
-                    </div>
-                <div class=" col-md-6 col-lg-6 col-sm-12 havespan-select row">
-                    <label class="col-12 col-sm-12 text-center" for="catagory name"></label>
-                    <select class="col form-control" placeholder="catagory name" name="cataname" required="required">
-                        <?php
-                        $stmt=$con->prepare('SELECT * FROM catagories');
-                        $stmt->execute();
-                        $cats=$stmt->fetchAll();
-                        foreach($cats as $cat)
-                        {
-                            echo'<option value="'.$cat['catagory_id'].'"';
-                            if($cat['catagory_id']==$row['cat_id']) echo "selected";
-                            echo'>'.$cat['catagory_name'].'</option>';
-                        }
-                        ?>
-                    </select>
-                </div>
-                </div>
-                <div class="save form-row button">
-                    <input type="submit" class="btn btn-primary col-md-2" value="edit">
-                </div>
-            </form>
-            <?php
-                }
-                else
-                {
-                    echo "<div class='alert alert-danger'>there is no id such that</div>";
-                    header('refresh:5;items.php?do=manage');
-                }
-        }
-        else
-        {
-            Redirect("you can't browse this page directly",3);
-        }
     }
     elseif($do=='update')
     {
@@ -508,6 +414,99 @@ if(isset($_SESSION["username"]))
         }
         header('refresh:3;items.php?do=manage');
         echo "</div>";
+    }
+    elseif($do=='edit')
+    {
+        echo"<div class='container Add'>";
+        if($_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET['itemid'])&&is_numeric($_GET['itemid']))
+        {
+            $itemid=intval($_GET['itemid']);
+            $stmt=$con->prepare("SELECT * FROM items WHERE itemid=$itemid");
+            $stmt->execute();
+            $row=$stmt->fetch();
+            $count=$stmt->rowcount();
+            if($count>0){
+            ?>
+            <h2 class="text-center h2-text">edit Page</h2>
+            <hr>
+            <form class="container formreg" action="items.php?do=update&itemid=<?php echo $itemid;?>" method="POST">
+                <div class="des&name  row" >
+                    <div class="  col-md col-lg col-sm-12 havespan">
+                        <label  class="col-12 col-sm-12 text-center" id="itemname" for="itemname"></label>
+                        <input class="col-12 col-sm-12 form-control"  type="text" value="<?php echo $row['itemname'];?>" name='itemname' id="itemname" placeholder="item name" autocomplete="off">
+                    </div>
+                    <div class=" col-md col-lg col-sm-12 havespan">
+                        <label class="col-12 col-sm-12 text-center" for="descripation"></label>
+                        <input class="col-12 col-sm-12 form-control"  type="text" value="<?php echo $row['descripation'];?>"  name='descripation' id="descripation" placeholder="descripation to item">
+                    </div>
+                </div>
+                <div class="country&price row">
+                    <div class=" col-md col-lg col-sm-12 havespan">
+                            <label class="col-12 col-sm-12 text-center" for="price"></label>
+                            <input class="col-12 col-sm-12 form-control"   type="text" value="<?php echo $row['price'];?>"  name='price' id="price" placeholder="price of the item" >
+                        </div>
+                        <div class=" col-md col-lg col-sm-12 havespan">
+                            <label class="col-12 col-sm-12 text-center" for="country"></label>
+                            <input class="col-12 col-sm-12 form-control"   type="text" value="<?php echo $row['country_made'];?>"  name='country' id="country" placeholder="country make of the item" >
+                    </div>
+                </div>
+                <div class="stutes  row">
+                    <div class=" col-md-6 col-lg-6 col-sm-12 havespan-select row">
+                        <select class="col form-control" placeholder="stutes" name="stutes" required="required" >
+                            <option <?php if ( $row['stutes']==1)echo "selected ";?>value='1' >new</option>
+                            <option <?php if ( $row['stutes']==2)echo "selected ";?>value='2'>used</option>
+                            <option  <?php if ( $row['stutes']==3)echo "selected ";?>value='3'>old</option>
+                        </select>
+                    </div>
+                    <div class=" col-md-6 col-lg-6 col-sm-12 havespan-select row">
+                        <label class="col-12 col-sm-12 text-center" for="username"></label>
+                        <select class="col form-control" placeholder="user name" name="username" required="required">
+                            <?php
+                            $stmt=$con->prepare('SELECT * FROM users WHERE group_id!=1');
+                            $stmt->execute();
+                            $users=$stmt->fetchAll();
+                            foreach($users as $user)
+                            {
+                                echo '<option value="'.$user['userid'].'"';
+                                if($user['userid']==$row['member_id']) echo 'selected';
+                                echo '>'.$user['username'].'</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+                <div class=" col-md-6 col-lg-6 col-sm-12 havespan-select row">
+                    <label class="col-12 col-sm-12 text-center" for="catagory name"></label>
+                    <select class="col form-control" placeholder="catagory name" name="cataname" required="required">
+                        <?php
+                        $stmt=$con->prepare('SELECT * FROM catagories');
+                        $stmt->execute();
+                        $cats=$stmt->fetchAll();
+                        foreach($cats as $cat)
+                        {
+                            echo'<option value="'.$cat['catagory_id'].'"';
+                            if($cat['catagory_id']==$row['cat_id']) echo "selected";
+                            echo'>'.$cat['catagory_name'].'</option>';
+                        }
+                        ?>
+                    </select>
+                </div>
+                </div>
+                <div class="save form-row button">
+                    <input type="submit" class="btn btn-primary col-md-2" value="edit">
+                </div>
+            </form>
+            <?php
+                }
+                else
+                {
+                    echo "<div class='alert alert-danger'>there is no id such that</div>";
+                    header('refresh:5;items.php?do=manage');
+                }
+        }
+        else
+        {
+            Redirect("you can't browse this page directly",3);
+        }
     }
     else
     {

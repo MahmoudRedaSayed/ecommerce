@@ -1,6 +1,6 @@
 
 // the edite page
-var userAttribute=document.querySelectorAll(".formreg input[type='text'] , .formreg input[type='password'] ,.formreg input[type='email'] , select"),
+var userAttribute=document.querySelectorAll(".formreg input[type='text'] , .formreg input[type='password'] ,.formreg input[type='email'] , select,textarea"),
     userlabels=document.querySelectorAll(".formreg label");
     console.log(userAttribute);
     console.log(userlabels);
