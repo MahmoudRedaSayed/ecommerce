@@ -1,4 +1,5 @@
 <?php
+include dirname(__FILE__).'/../../admin/connect.php';
 // function to make the title of the page more dynamic  v 1.0
     function getTitle(){
         global $pagetitle ; //to be acced every where
@@ -115,4 +116,21 @@ function isactive($select,$id,$from,$val,$flag)
         }
     }
 }
-//////////////////////////////
+////////////////////////////////////////
+// function to get the catagories
+function getcat()
+{
+    global $con;
+    $stmt=$con->prepare("SELECT * FROM catagories ORDER BY catagory_id DESC");
+    $stmt->execute();
+    return $stmt->fetchAll();
+}
+//////////////////////////
+//function to get the items of the catagory
+function getcatitems($catid)
+{
+    global $con;
+    $stmt=$con->prepare("SELECT items.* ,users.username FROM items INNER JOIN users ON users.userid=items.member_id  WHERE cat_id=? ORDER BY itemid DESC");
+    $stmt->execute([$catid]);
+    return $stmt->fetchAll();
+}
