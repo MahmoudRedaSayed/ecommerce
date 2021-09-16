@@ -134,3 +134,39 @@ function getcatitems($catid)
     $stmt->execute([$catid]);
     return $stmt->fetchAll();
 }
+////////////////////////////////////////////////
+// function to check if the user is active or not
+function checkisactive($userid)
+{
+    global $con;
+    $stmt=$con->prepare("SELECT * FROM users WHERE userid=$userid AND regstatus=1");
+    $stmt->execute();
+    return $stmt->rowcount();
+}
+////////////////////////////////////////////
+//function to get the data to profile page
+function getDataProfile($userid)
+{
+    global $con;
+    $stmt=$con->prepare("SELECT * FROM users WHERE userid=$userid LIMIT 1");
+    $stmt->execute();
+    return $stmt->fetchAll();
+}
+///////////////////////////////////////////////
+// function to get the latest comments to the person
+function getuseritems($userid)
+{
+    global $con;
+    $stmt=$con->prepare("SELECT items.* , catagories.catagory_name FROM items   INNER JOIN catagories ON catagories.catagory_id=items.cat_id  WHERE items.member_id=$userid");
+    $stmt->execute();
+    return $stmt->fetchAll();
+}
+///////////////////////////////////////////////
+//function to get the comments of the user
+function getusercomments($userid)
+{
+    global $con;
+    $stmt=$con->prepare("SELECT comments.* , items.itemname FROM comments   INNER JOIN items ON items.itemid=comments.item_id  WHERE comments.member_id=$userid");
+    $stmt->execute();
+    return $stmt->fetchAll();
+}

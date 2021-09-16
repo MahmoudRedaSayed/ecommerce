@@ -43,6 +43,11 @@ $(".itemname").each(function(){
   $(this).click(()=>{
     $('.itemslider').slideToggle(1000);
   });
+  var icon=document.querySelector('.profile-page .about h3 i.up');
+  console.log(icon);
+$('.profile-page .about h3 i.up').click(()=>{
+  $(this).parent().next().next().slideToggle();
+});
 });
 // var itemslider=document.querySelectorAll(".itemslider"),
 //     itemname=document.querySelectorAll(".itemname"),

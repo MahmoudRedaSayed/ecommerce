@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<!-- <?php session_start();
+?> -->
 <HTML>
     <head>
         <!-- google font color: #666; -->
@@ -16,14 +18,30 @@
         <title><?php getTitle();?></title>
     </head>
     <body>
-        <div class="container">
-          <ul>
+        <!-- <div class="container"> -->
+          <ul class='new-nav'>
+            <?php 
+            if(!isset($_SESSION['user'])){
+            ?>
             <li><a href="login.php?do=login">login|</a><a href="login.php?do=signup">signup</a></li>
+            <?php
+            }
+            else
+            {
+              ?>
+                  <li> welcome <?php echo $_SESSION['user'];?></li>
+                  <li><a href="logout.php">logout</a></li>
+                  <?php if(checkisactive($_SESSION['userid'])==1) { ?>
+                  <li><a href="profile.php">profile</a></li>
+              <?php
+                  }
+            }
+            ?>
           </ul>
-        </div>
+        <!-- </div> -->
     <nav class="navbar navbar-expand-lg  ">
   <div class="container">
-    <a class="navbar-brand" href="dashed.php">Home page</a>
+    <a class="navbar-brand" href="index.php">Home page</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="fa fa-bars"></span>
     </button>

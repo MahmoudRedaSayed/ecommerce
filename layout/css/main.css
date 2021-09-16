@@ -30,6 +30,22 @@ body{
     font-weight: bold;
 }
 /* the start of the nav bar */
+.new-nav{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: var(--maincolor);
+    color: white;
+    margin-bottom: 0;
+    border-bottom: 1px solid white;
+}
+.new-nav a{
+    text-decoration: none;
+    color: white;
+}
+.new-nav a:hover{
+    color:#3498db;
+}
 .navbar-expand-lg .navbar-collapse{
     justify-content: flex-end;
 }
@@ -355,3 +371,115 @@ body{
     }
 }
 /* the end of the login */
+/* the start of the profile page */
+/* the main class to the heading in profile page */
+.profile-page .h3{
+    font-weight: bold;
+    text-transform: capitalize;
+    text-align: center;
+    color: #3e94ce;
+}
+/* ////////////////////////////////// */
+.profile-page{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    font-family: 'Nunito', sans-serif;
+    background-color: white;
+    padding: 20px 10px;
+}
+.profile-page .images{
+    position:relative;
+}
+.profile-page .image1 img{
+    width: 100%;
+    height: 300px;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+}
+.profile-page .image2{
+    position: absolute;
+    top: 70%;
+    left: 50%;
+    transform: translateX(-50%);
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    -o-transform: translateX(-50%);
+}
+.profile-page .image2 img{
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+}
+.profile-page .name-descripation{
+    margin-top: 100px;
+    text-align: center;
+}
+.profile-page .about h3 i {
+    cursor: pointer;
+}
+.profile-page .user-items .items{
+    display: flex;
+    justify-content: space-evenly;
+}
+.profile-page .user-items a{
+    margin: 10px 0;
+}
+.profile-page .user-comments{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.profile-page .user-comments .comment{
+    display: flex;
+    gap: 1rem;
+}
+.profile-page .user-comments .comment p{
+    background-color: rgb(228, 222, 222);
+    position: relative;
+    padding: 10px;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+}
+.profile-page .user-comments .comment a{
+    padding: 10px;
+    font-size: 25px;
+    font-weight: bold;
+}
+.profile-page .user-comments .comment p::before{
+    content:"";
+    position:absolute;
+    left: -20px;
+    border: 10px solid #3e94ce;
+    border-bottom-color: transparent ;
+    border-top-color: transparent ;
+    border-left-color: transparent ;
+}
+.profile-page .error404{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+.profile-page .error404 h4{
+    font-size: 30px;
+    font-weight: bold;
+    color: red;
+}
+.profile-page .error404 img{
+    width: 400px;
+    height: 400px;
+}
+/* the enc of the profile page */

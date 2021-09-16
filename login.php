@@ -1,4 +1,9 @@
 <?php
+// session_start();
+// if(isset($_SESSION['user']))
+// {
+//     header('location:index.php');
+// }
 include "init.php";
 echo "<div class='container-page'>";
 if($_SERVER["REQUEST_METHOD"]=="GET")
@@ -8,9 +13,9 @@ if($_SERVER["REQUEST_METHOD"]=="GET")
             {?>
                 <div class='formcontainer-login formcontainer'>
                 <h2 class='text-center h2-text'>login</h2>
-                <form action="">
+                <form action="<?php echo $_SERVER["PHP_SELF"] ?>" method='POST'>
                     <label for="email"></label>
-                    <input type="email" name='email' class='form-control' id='email' placeholder='enter your emial' autocomlete='off'>
+                    <input type="text" name='email' class='form-control' id='email' placeholder='enter your emial' autocomlete='off'>
                     <label for="password"></label>
                     <input type="password" name='password' id='password' class='form-control password' placeholder='enter your password' autocomlete='off'>
                     <input type="submit" value="login"class="loginbutton">
@@ -29,12 +34,12 @@ if($_SERVER["REQUEST_METHOD"]=="GET")
                 </div>
             <?php
             }
-             elseif($do =='signup')
-             {
+            elseif($do =='signup')
+            {
                 ?>
                 <div class='formcontainer-signup formcontainer'>
                     <h2 class='text-center h2-text'>sign up</h2>
-                <form action="">
+                <form action="<?php echo $_SERVER["PHP_SELF"] ?>" method='POST'>
                     <label for="fullname"></label>
                     <input type="text" name='fullname' class='form-control' id='fullname' placeholder='enter your fullname to appear in the profile page' autocomlete='off'>
                     <label for="username"></label>
@@ -67,9 +72,36 @@ if($_SERVER["REQUEST_METHOD"]=="GET")
                 ?>
             <?php
 }
-else
+if($_SERVER['REQUEST_METHOD']='POST')
 {
-    echo"<div class='alert alert-danger'>you can not browse this page dirct</div>";
+    if(!(isset($_POST['fullname'])))
+    {
+        $username      =$_POST['email'];
+        $password   =$_POST['password'];
+        $hashedpass=sha1($password);
+        $stmt=$con->prepare("SELECT userid , username , userpassword , group_id FROM users WHERE userpassword=? AND username=?");
+        $stmt->execute(array($hashedpass,$username));
+        // to bring the data
+        $row=$stmt->fetch();
+        $count= $stmt->rowCount();
+        if($count>0)
+        {
+            $_SESSION['user']=$row['username'];
+            $_SESSION['userid']=$row['userid'];
+            header('location:index.php');
+        }
+    }
+    else
+    {
+        $fullname=$_POST['fullname'];
+        $username=$_POST['username'];
+        $password=$_POST['password'];
+        $gmail=$_POST['gmail'];
+        echo $_POST['fullname'];
+        echo$_POST['username'];
+        echo$_POST['password'];
+        echo$_POST['gmail'];
+    }
 }
 echo"</div>";
 include $tmp.'/footer.php';
