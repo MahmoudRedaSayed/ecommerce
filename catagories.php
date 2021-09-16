@@ -66,3 +66,4 @@ if($_SERVER["REQUEST_METHOD"]=='GET')
     </div>
     <?php
 }
+include $tmp."/footer.php";

@@ -1,9 +1,9 @@
 
 // the edite page
-var userAttribute=document.querySelectorAll(".formreg input[type='text'] , .formreg input[type='password'] ,.formreg input[type='email'] , select,textarea"),
-    userlabels=document.querySelectorAll(".formreg label");
-    console.log(userAttribute);
-    console.log(userlabels);
+var userAttribute=document.querySelectorAll("input[type='text'] ,  input[type='password'] , input[type='email'] , select,textarea"),
+    userlabels=document.querySelectorAll(" label"),
+    videos=document.querySelectorAll(".controls .vid-btn"),
+    video=document.querySelector("#video");
 var index;
 userAttribute.forEach((user, index) => {
     if(user.getAttribute('type')!='hidden'&&user.getAttribute('type')!='submit')
@@ -19,3 +19,9 @@ userAttribute.forEach((user, index) => {
     });
     }
 });
+videos.forEach(btn=>{
+    btn.onclick= ()=>{
+        document.querySelector(".controls .active").classList.remove("active");
+        btn.classList.add("active");
+        video.setAttribute("src",btn.getAttribute("data-scr"));
+}});

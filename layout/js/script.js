@@ -39,9 +39,19 @@ $('i.up').each(function(){
   $(this).parent().next().slideToggle(1000);
 })
 });
-$(".itemname").click(()=>{
-  $(".itemslider").slideToggle(1000);
+$(".itemname").each(function(){
+  $(this).click(()=>{
+    $('.itemslider').slideToggle(1000);
+  });
 });
+// var itemslider=document.querySelectorAll(".itemslider"),
+//     itemname=document.querySelectorAll(".itemname"),
+//     index=0;
+//   itemname.forEach((item, index) =>{
+//   item.click(()=>{
+//     itemslider[index].slideToggle(1000);
+//   });
+// });
 });
 
 

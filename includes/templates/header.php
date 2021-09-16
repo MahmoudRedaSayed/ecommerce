@@ -16,7 +16,11 @@
         <title><?php getTitle();?></title>
     </head>
     <body>
-        <div class="container">anothor nav</div>
+        <div class="container">
+          <ul>
+            <li><a href="login.php?do=login">login|</a><a href="login.php?do=signup">signup</a></li>
+          </ul>
+        </div>
     <nav class="navbar navbar-expand-lg  ">
   <div class="container">
     <a class="navbar-brand" href="dashed.php">Home page</a>
