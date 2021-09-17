@@ -1,7 +1,7 @@
 <?php
 $pagetitle="catagory page";
 session_start();
-if(isset($_SESSION["username"]))
+if(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
 {
     include "init.php";
     $do=(isset($_GET['do']))?$_GET['do']:'manage';

@@ -6,9 +6,10 @@ global $tmp;
 */
 $pagetitle="Members page";
 global $tmp;
+$themainadmin;
 // the start of the session
 session_start();
-iF(isset($_SESSION["username"]))
+iF(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
 {
     include "init.php";
     /*check if there is an get request or not to decide which 
@@ -22,6 +23,7 @@ iF(isset($_SESSION["username"]))
     <div class="container row mr-auto choose">
         <a class='btn btn-success ' href="members.php?choose=Allmembers">ALL Members</a>
         <a class='btn btn-success ' href="members.php?choose=Unactivemembers">Unactive Members</a>
+        <a class='btn btn-success ' href="members.php?choose=Admins">Admins</a>
     </div>
     <div class="container manage">
             <?php
@@ -203,6 +205,117 @@ iF(isset($_SESSION["username"]))
                         else
                         {
                             echo '<h2 class="text-center h2-text">There is no unactive members</h2>';
+                        }
+                    }
+                    elseif($choose=='Admins')
+                {
+                    // preparing the data of the users expacting the admin by using the group_id
+                    $stmt=$con->prepare("SELECT * from users WHERE group_id=1 AND regstatus=1 AND userid!=?");
+                    $stmt->execute([$_SESSION['userid']]);
+                    // fetch all data like array
+                    $data=$stmt->fetchAll();
+                    $num=$stmt->rowcount();
+                        if($num!=0)
+                        {
+                            ?>
+                            <h2 class="text-center h2-text">The Data Of The Admins</h2>
+                            <hr>    
+                            <!-- the table to show the data of the users -->
+                            <table class="table table-dark">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>username</th>
+                                    <th>email</th>
+                                    <th>fullname</th>
+                                    <th>Date</th>
+                                    <th>profile picture</th>
+                                    <th>cover picture</th>
+                                    <th>manage</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <?php
+                                $max=$data[0]['userid'];
+                                foreach($data as $user)
+                                {
+                                    if($max>$user['userid'])
+                                    {
+                                        $max=$user['userid'];
+                                    }
+                                }
+                                $themainadmin=$max;
+                                if($themainadmin>$_SESSION['userid'])
+                                {
+                                    unset($themainadmin);
+                                }
+                            //by using the for loop iterat on the array and fill the rows
+                            foreach($data as $user)
+                            {
+                                echo"<tr>";
+                                echo "<td>".$user['userid']."</td>";
+                                echo "<td>".$user['username']."</td>";
+                                echo "<td>".$user['email']."</td>";
+                                echo "<td>".$user['fullname']."</td>";
+                                echo "<td>".$user['userdate']."</td>";
+                                echo "<td><img src='";
+                                //profile img
+                                if(empty($user['profileimg']))
+                                {
+                                    if($user['gander']==1)
+                                    {
+                                        echo "../uploads\default\\user-icon.png";
+                                    }
+                                    else
+                                    {
+                                        echo "../uploads\default\\user-icon-female.jpg";
+                                    }
+                                }
+                                else
+                                {
+                                    echo"../uploads\profiles\\".$user['profileimg'];
+                                }
+                                echo"'/></td>";
+                                //cover img
+                                echo "<td><img src='";
+                                if(empty($user['coverimg']))
+                                {
+                                    if($user['gander']==1)
+                                    {
+                                        echo "../uploads\default\\user-icon.png";
+                                    }
+                                    else
+                                    {
+                                        echo "../uploads\default\\user-icon-female.jpg";
+                                    }
+                                }
+                                else
+                                {
+                                    echo"../uploads\cover\\".$user['coverimg'];
+                                }
+                                echo"'/></td>";
+                            // the links the lead to the delet or edit pages
+                            if(isset($themainadmin))
+                            {
+                                if($user['userid']!=$themainadmin)
+                                {
+                                    echo "<td class='row'><a class='edit btn btn-success col' href='members.php?do=edit&userid=".$user['userid']."'><i class='fas fa-user-edit'></i> Edit</a><a class='delete btn btn-danger col' id='delete' href='members.php?do=delete&userid=".$user['userid']."'><i class='fas fa-trash-alt'></i>Delete</a>";
+                                    echo "</td>";
+                                }
+                                else
+                                {
+                                    echo "<td><h4>the main Admin you can not manage him</h4></td>";
+                                }
+                            }
+                            else
+                            {
+                                echo "<td class='row'><a class='edit btn btn-success col' href='members.php?do=edit&userid=".$user['userid']."'><i class='fas fa-user-edit'></i> Edit</a><a class='delete btn btn-danger col' id='delete' href='members.php?do=delete&userid=".$user['userid']."'><i class='fas fa-trash-alt'></i>Delete</a>";
+                                    echo "</td>";
+                            }
+                            
+                                echo"</tr>";
+                            }
+                            echo " </tbody></table>";
                         }
                     }
             ?>

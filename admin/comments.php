@@ -7,7 +7,7 @@ $pagetitle="Comments page";
 global $tmp;
 // the start of the session
 session_start();
-iF(isset($_SESSION["username"]))
+iF(isset($_SESSION["username"])||$_SESSION["usergroupid"]==1)
 {
     include "init.php";
     /*check if there is an get request or not to decide which 

@@ -579,6 +579,44 @@ body{
     -ms-border-radius: 10px;
     -o-border-radius: 10px;
 }
+.item-comments{
+    background-color: white;
+    width: 100%;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    margin-top: 20px;
+    overflow: hidden;
+    padding: 20px;
+}
+.item-comments h3{
+    text-transform: capitalize;
+    font-size: 25px;
+    text-align:center;
+    color:#3e94ce ;
+}
+.item-comments .comment{
+    color: white;
+    background-color:#3e94ce;
+    position:relative;
+    padding: 10px;
+    border-bottom-right-radius:20px;
+    border-bottom-left-radius:10px;
+    border-top-left-radius:20px;
+    border-top-right-radius:10px
+}
+.item-comments .comment::before{
+    content:"";
+    position: absolute;
+    top: 10px;
+    left: -21px;
+    border: 12px solid #3e94ce;
+    border-left-color: transparent;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+}
 .nocomment-item{
     width: 100%;
     display: flex;

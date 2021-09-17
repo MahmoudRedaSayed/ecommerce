@@ -38,7 +38,9 @@ if($_SERVER["REQUEST_METHOD"]=='GET')
                         echo $catitems['username'];
                     }
                 echo"</a>";
-                echo "<a class='more-detials'> more detials </a>";
+                echo "<a class='more-detials' href='item.php?itemid=";
+                echo $catitems['itemid']."&itemname=".$catitems['itemname'];
+                echo"'> more detials </a>";
                 echo"</div>";
                 echo "</div>";
                 echo"<div class='itemdata'>";

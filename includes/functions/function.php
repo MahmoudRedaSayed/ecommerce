@@ -136,6 +136,15 @@ function checkisactive($userid)
     $stmt->execute();
     return $stmt->rowcount();
 }
+///////////////////////////////////////////
+//function to check if the user is admin or not
+function checkisadmin($userid)
+{
+    global $con;
+    $stmt=$con->prepare("SELECT * FROM users WHERE userid=$userid AND group_id=1");
+    $stmt->execute();
+    return $stmt->rowcount();
+}
 ////////////////////////////////////////////
 //function to get the data to profile page
 function getDataProfile($userid)

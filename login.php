@@ -97,6 +97,7 @@ elseif($_SERVER['REQUEST_METHOD']='POST')
         {
             $_SESSION['user']=$row['username'];
             $_SESSION['userid']=$row['userid'];
+            $_SESSION['usergroupid']=$row['group_id'];
             header('location:index.php');
             exit();
         }

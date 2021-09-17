@@ -3,7 +3,7 @@
 $pagetitle="dashed";
 $limit=5;
 session_start();
-if(isset($_SESSION['username']))
+if(isset($_SESSION['username'])||$_SESSION['usergroupid']==1)//iam not sure
 {
     include 'init.php';
     ?>

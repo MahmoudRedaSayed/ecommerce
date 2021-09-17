@@ -33,8 +33,14 @@
                   <li><a href="logout.php">logout</a></li>
                   <?php if(checkisactive($_SESSION['userid'])==1) { ?>
                   <li><a href="profile.php">profile</a></li>
+                  <?php
+                  }
+                  ?>
+                  <?php if(checkisadmin($_SESSION['userid'])==1) { ?>
+                  <li><a href="admin\dashed.php">control page</a></li>
               <?php
                   }
+                  
             }
             ?>
           </ul>

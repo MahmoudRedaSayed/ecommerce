@@ -147,7 +147,14 @@ elseif(isset($_SESSION['user'])&&$_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET[
                     <hr>
                     <div class="item-data">
                     <div class='the-data'>
+                        <?php 
+                        if($catas_member_row[0]['membername']!=$_SESSION['user'])
+                        {
+                            ?>
                         <div><i class='fa fa-user'></i> published by : <span><?php echo $catas_member_row[0]['membername']?></span></div>
+                            <?php
+                        }
+                        ?>
                         <div><i class="fas fa-tags"></i>catagories : <span><?php echo$catas_member_row[0]['catagory_name']?></span> </div>
                         <div> <i class="fas fa-audio-description"></i>item descripation : <span><?php echo$catas_member_row[0]['descripation'] ?></span></div>
                         <div> <i class="fas fa-globe-asia"></i>country made : <span><?php echo$catas_member_row[0]['country_made'] ?></span></div>
@@ -177,7 +184,7 @@ elseif(isset($_SESSION['user'])&&$_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET[
         if(!empty($comments_row))
         {
             ?>
-            <div class="user-comments">
+            <div class="item-comments">
             <h3 class='h3'> the comments on the item <i class="fa fa-comments"></i> </h3><hr>
         <?php
         if(!empty($comments_row))
