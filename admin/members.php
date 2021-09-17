@@ -1,4 +1,5 @@
 <?php
+global $tmp;
 /*
     this is the members page lead to Delet or Edit or Add
     and the insert page is just a temp page 
@@ -44,13 +45,11 @@ iF(isset($_SESSION["username"]))
                                 <tr>
                                     <th>ID</th>
                                     <th>username</th>
-                                    <!-- <th>userpassword</th> -->
                                     <th>email</th>
                                     <th>fullname</th>
-                                    <!-- <th>group_id</th>
-                                    <th>trust_stutes</th>
-                                    <th>regstutes</th> -->
                                     <th>Date</th>
+                                    <th>profile picture</th>
+                                    <th>cover picture</th>
                                     <th>manage</th>
                                 </tr>
                                 </thead>
@@ -62,13 +61,45 @@ iF(isset($_SESSION["username"]))
                                 echo"<tr>";
                                 echo "<td>".$user['userid']."</td>";
                                 echo "<td>".$user['username']."</td>";
-                                // echo "<td>".$user['userpassword']."</td>";
                                 echo "<td>".$user['email']."</td>";
                                 echo "<td>".$user['fullname']."</td>";
-                                // echo "<td>".$user['group_id']."</td>";
-                                // echo "<td>".$user['truststatus']."</td>";
-                                // echo "<td>".$user['regstatus']."</td>";
                                 echo "<td>".$user['userdate']."</td>";
+                                echo "<td><img src='";
+                                //profile img
+                                if(empty($user['profileimg']))
+                                {
+                                    if($user['gander']==1)
+                                    {
+                                        echo "../uploads\default\\user-icon.png";
+                                    }
+                                    else
+                                    {
+                                        echo "../uploads\default\\user-icon-female.jpg";
+                                    }
+                                }
+                                else
+                                {
+                                    echo"../uploads\profiles\\".$user['profileimg'];
+                                }
+                                echo"'/></td>";
+                                //cover img
+                                echo "<td><img src='";
+                                if(empty($user['coverimg']))
+                                {
+                                    if($user['gander']==1)
+                                    {
+                                        echo "../uploads\default\\user-icon.png";
+                                    }
+                                    else
+                                    {
+                                        echo "../uploads\default\\user-icon-female.jpg";
+                                    }
+                                }
+                                else
+                                {
+                                    echo"../uploads\cover\\".$user['coverimg'];
+                                }
+                                echo"'/></td>";
                                 // the links the lead to the delet or edit pages
                                 echo "<td class='row'><a class='edit btn btn-success col' href='members.php?do=edit&userid=".$user['userid']."'><i class='fas fa-user-edit'></i> Edit</a><a class='delete btn btn-danger col' id='delete' href='members.php?do=delete&userid=".$user['userid']."'><i class='fas fa-trash-alt'></i>Delete</a>";
                                 if($user['regstatus']!=1)
@@ -106,13 +137,11 @@ iF(isset($_SESSION["username"]))
                                 <tr>
                                     <th>ID</th>
                                     <th>username</th>
-                                    <!-- <th>userpassword</th> -->
                                     <th>email</th>
                                     <th>fullname</th>
-                                    <!-- <th>group_id</th>
-                                    <th>trust_stutes</th>
-                                    <th>regstutes</th> -->
                                     <th>Date</th>
+                                    <th>profile picture</th>
+                                    <th>cover picture</th>
                                     <th>manage</th>
                                 </tr>
                                 </thead>
@@ -124,13 +153,45 @@ iF(isset($_SESSION["username"]))
                                 echo"<tr>";
                                 echo "<td>".$user['userid']."</td>";
                                 echo "<td>".$user['username']."</td>";
-                            // echo "<td>".$user['userpassword']."</td>";
                                 echo "<td>".$user['email']."</td>";
                                 echo "<td>".$user['fullname']."</td>";
-                            // echo "<td>".$user['group_id']."</td>";
-                            // echo "<td>".$user['truststatus']."</td>";
-                            // echo "<td>".$user['regstatus']."</td>";
                                 echo "<td>".$user['userdate']."</td>";
+                                echo "<td><img src='";
+                                //profile img
+                                if(empty($user['profileimg']))
+                                {
+                                    if($user['gander']==1)
+                                    {
+                                        echo "uploads\default\\user-icon.png";
+                                    }
+                                    else
+                                    {
+                                        echo "uploads\default\\user-icon-female.jpg";
+                                    }
+                                }
+                                else
+                                {
+                                    echo"uploads\profiles\\".$user['profileimg'];
+                                }
+                                echo"'/></td>";
+                                //cover img
+                                echo "<td><img src='";
+                                if(empty($user['coverimg']))
+                                {
+                                    if($user['gander']==1)
+                                    {
+                                        echo "uploads\default\\user-icon.png";
+                                    }
+                                    else
+                                    {
+                                        echo "uploads\default\\user-icon-female.jpg";
+                                    }
+                                }
+                                else
+                                {
+                                    echo"uploads\cover\\".$user['coverimg'];
+                                }
+                                echo"'/></td>";
                             // the links the lead to the delet or edit pages
                                 echo "<td class='row'><a class='edit btn btn-success col' href='members.php?do=edit&userid=".$user['userid']."'><i class='fas fa-user-edit'></i> Edit</a><a class='delete btn btn-danger col' id='delete' href='members.php?do=delete&userid=".$user['userid']."'><i class='fas fa-trash-alt'></i>Delete</a>";
                                 echo "<a class='edit btn btn-primary col' href='members.php?do=Active&userid=".$user['userid']."'><i class='fas fa-user-lock'></i> Active</a>";
@@ -207,8 +268,8 @@ iF(isset($_SESSION["username"]))
             ?>
             <h2 class="text-center h2-text">Add Page</h2>
             <hr>
-            <form class="container formreg" action="members.php?do=insert" method="POST">
-                        <div class="user&name  row" >
+            <form class="container formreg" action="members.php?do=insert" method="POST" enctype="multipart/form-data">
+                <div class="user&name  row" >
                     <div class="  col-md col-lg col-sm-12 havespan">
                         <label  class="col-12 col-sm-12 text-center" id="usernamelabel" for="username"></label>
                         <input class="col-12 col-sm-12 form-control"  type="text" name='username' id="usernamefield" placeholder="username" autocomplete="off" required="required">
@@ -226,6 +287,16 @@ iF(isset($_SESSION["username"]))
                     <div class=" col-md col-lg col-sm-12 havespan">
                         <label class="col-12 col-sm-12 text-center" for="email"></label>
                         <input class="col-12 col-sm-12 form-control"  type="email" name='email' id="email" placeholder="email" autocomplete="off" required="required">
+                    </div>
+                </div>
+                <div class='pictures havespan row'>
+                <div class=" col-md col-lg col-sm-12 havespan">
+                        <label class="col-12 col-sm-12 text-center" for="personaliamge"></label>
+                        <input class="col-12 col-sm-12 form-control"   type="file" name='personaliamge' id="personaliamge" placeholder="profile image">
+                    </div>
+                    <div class=" col-md col-lg col-sm-12 havespan">
+                        <label class="col-12 col-sm-12 text-center" for="coveriamge"></label>
+                        <input class="col-12 col-sm-12 form-control"  type="file" name='coveriamge' id="coveriamge" placeholder="coveriamge" >
                     </div>
                 </div>
                 <div class="save form-row button">
@@ -323,6 +394,28 @@ iF(isset($_SESSION["username"]))
             $fullname   =$_POST["fullname"];
             $email      =$_POST["email"];
             $password   =$_POST["password"];
+            $profileimg =$_FILES['personaliamge'];
+            $coverimg   =$_FILES['coveriamge'];
+            // the data of the images
+            // profile
+            $profile_name=$_FILES['personaliamge']['name'];
+            $profile_tmpname=$_FILES['personaliamge']['tmp_name'];
+            $profile_size=$_FILES['personaliamge']['size'];
+            $profile_type=$_FILES['personaliamge']['type'];
+            //the data of the cover
+            $cover_name=$_FILES['coveriamge']['name'];
+            $cover_tmpname=$_FILES['coveriamge']['tmp_name'];
+            $cover_size=$_FILES['coveriamge']['size'];
+            $cover_type=$_FILES['coveriamge']['type'];
+            // allow extations
+            $array_ex=array('png','jpg','jpeg','gif');
+            // get the extantion
+            $profile_ex1=explode('.', $profile_name);
+            $profile_ex2=end($profile_ex1);
+            $profile_ex=strtolower($profile_ex2);
+            $cover_ex1=explode('.', $cover_name);
+            $cover_ex2=end($cover_ex1);
+            $cover_ex=strtolower($cover_ex2);
             // the header of the page
             echo'<h1 class="text-center h2-text">insert Page welcome '.$_SESSION['username'].' </h1>';
             // the array of the errors
@@ -344,13 +437,35 @@ iF(isset($_SESSION["username"]))
             {
                 $Error[]="<div class='alert alert-danger'>the email must be filled </div>";
             }
+            if(!empty( $profileimg )&&!in_array($profile_ex,$array_ex))
+            {
+                $Error[]="<div class='alert alert-danger'>the extation of the profile is not allowed </div>";
+            }
+            if(!empty( $coverimg )&&!in_array($cover_ex,$array_ex))
+            {
+                $Error[]="<div class='alert alert-danger'>the extation of the cover is not allowed </div>";
+            }
+            if($profile_size>(3*4194304))
+            {
+                $Error[]="<div class='alert alert-danger'>the profile picture can not be more than 12MB</div>";
+            }
+            if($cover_size>(3*4194304))
+            {
+                $Error[]="<div class='alert alert-danger'>the cover picture can not be more than 12MB</div>";
+            }
+
             if(empty($Error))
             {
+                // to ensure that the name of the img can not be repeated will use a random function
+                $profile=rand(1,10000).$profile_name;
+                $cover=rand(1,10000).$cover_name;
+                move_uploaded_file($profile_tmpname,"uploads\profiles\\".$profile);
+                move_uploaded_file($cover_tmpname,"uploads\cover\\".$cover);
                 $CheckUserPass=checkprepare('userpassword','users',sha1($password));
                 if(($CheckUserPass == 0))
                 {
-                    $stmt=$con->prepare("INSERT INTO users (username,userpassword,fullname,email,regstatus,userdate) VALUES (?,?,?,?,1,now())");
-                    $stmt->execute([$username,sha1($password),$fullname,$email]);
+                    $stmt=$con->prepare("INSERT INTO users (username,userpassword,fullname,email,regstatus,userdate,profileimg,coverimg) VALUES (?,?,?,?,1,now(),?,?)");
+                    $stmt->execute([$username,sha1($password),$fullname,$email,$profile,$cover]);
                     echo "<div class='alert alert-success'>the member is inserted</div>";
                     header("Refresh:5;members.php");
                 }

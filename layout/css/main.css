@@ -28,6 +28,7 @@ body{
     margin: 20px;
     font-family: 'Nunito', sans-serif;
     font-weight: bold;
+    text-align: center;
 }
 /* the start of the nav bar */
 .new-nav{
@@ -79,11 +80,11 @@ body{
      flex-direction: column;
      gap: 20px;
      background-color: #fff;
-     border-radius: 5px;
-     -webkit-border-radius: 5px;
-     -moz-border-radius: 5px;
-     -ms-border-radius: 5px;
-     -o-border-radius: 5px;
+     border-radius: 10px;
+     -webkit-border-radius: 10px;
+     -moz-border-radius: 10px;
+     -ms-border-radius: 10px;
+     -o-border-radius: 10px;
      overflow: hidden;
      margin-top: 20px;
      margin-bottom: 20px;
@@ -136,6 +137,8 @@ body{
 }
 .items .item .itemimage .user-item a{
     cursor: pointer;
+    text-decoration: none;
+    color: white;
 }
 .items .item .itemimage .user-item a i{
     margin-right: 10px;
@@ -161,6 +164,9 @@ body{
     position: relative;
     z-index: 1;
     overflow: hidden;
+}
+.items .item .itemimage{
+    height: 300px;
 }
 .items .item .itemimage .user-item .more-detials::before{
     content: '';
@@ -284,7 +290,7 @@ body{
 }
 .container-page{
     padding: 0;
-    height: calc(100vh - 96px );
+    height: calc(100vh - 81px );
     position: relative;
 }
 .vid-container{
@@ -390,10 +396,10 @@ body{
 }
 .profile-page .images{
     position:relative;
+    margin: auto;
 }
 .profile-page .image1 img{
-    width: 100%;
-    height: 300px;
+    height: 400px;
     border-radius: 10px;
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
@@ -402,17 +408,20 @@ body{
 }
 .profile-page .image2{
     position: absolute;
-    top: 70%;
+    top: 80%;
     left: 50%;
     transform: translateX(-50%);
     -webkit-transform: translateX(-50%);
     -moz-transform: translateX(-50%);
     -ms-transform: translateX(-50%);
     -o-transform: translateX(-50%);
+    background: white;
+    border-radius: 50%;
 }
 .profile-page .image2 img{
-    width: 150px;
-    height: 150px;
+    width: 200px;
+    height: 200px;
+    border: 1px solid;
     border-radius: 50%;
     -webkit-border-radius: 50%;
     -moz-border-radius: 50%;
@@ -481,5 +490,123 @@ body{
 .profile-page .error404 img{
     width: 400px;
     height: 400px;
+    border-radius: 50%;
 }
 /* the enc of the profile page */
+/* the start of item page */
+.formreg{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+.formreg label{
+    font-size: 20px;
+    font-weight: bold;
+    color: #666;
+}
+.formreg input , .formreg select{
+    position: relative;
+}
+.formreg input+span , .formreg select+span{
+    color: red;
+    position: absolute;
+}
+.formreg .save{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.formreg .save input[type='submit']{
+    font-size: 20px;
+}
+.formreg>div{
+    display: flex;
+    gap: 10px;
+}
+.formreg .row{
+    margin-left: 0;
+    margin-right: 0;
+}
+.formreg .stutes{
+    margin-right: 0;
+}
+/* the start of the item data */
+.show_item_data .item-data{
+    display: flex;
+    padding: 20px;
+    justify-content: space-between;
+    background-color: #fff;
+    width: 100%;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+}
+.show_item_data .the-data{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.show_item_data>h2{
+    text-transform: capitalize;
+    font-size: 25px;
+}
+.show_item_data .the-data i{
+    margin-right: 10px;
+}
+.show_item_data .the-data>div{
+    font-size: 20px;
+    color:#3e94ce ;
+    text-transform: capitalize;
+}
+.show_item_data .the-data>div span{
+    color: black;
+    font-size: 18px;
+    text-transform: none;
+}
+.show_item_data .item-data .itemimg{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.show_item_data .item-data img{
+    width: 100%;
+    height: 300px;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+}
+.nocomment-item{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    margin-top: 40px;
+    border-radius: 10px ;
+    -webkit-border-radius: 10px ;
+    -moz-border-radius: 10px ;
+    -ms-border-radius: 10px ;
+    -o-border-radius: 10px ;
+}
+.nocomment-item h4{
+    text-align: center;
+}
+.nocomment-item img{
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+}
+@media(max-width:768px){
+    .show_item_data .item-data{
+        flex-direction: column;
+    }
+}

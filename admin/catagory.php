@@ -1,4 +1,5 @@
 <?php
+global $tmp;
 $pagetitle="catagory page";
 session_start();
 if(isset($_SESSION["username"]))

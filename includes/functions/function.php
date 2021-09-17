@@ -57,13 +57,6 @@ function calcNums ( $select, $table ,$flag=0 ){
     }
     return $stmt->fetchColumn();
 }
-//function to get latest
-function getLatest( $select, $table , $limit=5,$order ){
-    global $con;
-    $stmt=$con->prepare("SELECT $select FROM $table ORDER BY $order DESC LIMIT $limit ");
-    $stmt->execute();
-    return $stmt->fetchAll();
-}
 //function to check if the catagory is active or not
 function isactive($select,$id,$from,$val,$flag)
 {
@@ -130,7 +123,7 @@ function getcat()
 function getcatitems($catid)
 {
     global $con;
-    $stmt=$con->prepare("SELECT items.* ,users.username FROM items INNER JOIN users ON users.userid=items.member_id  WHERE cat_id=? ORDER BY itemid DESC");
+    $stmt=$con->prepare("SELECT items.* ,users.username, users.userid FROM items INNER JOIN users ON users.userid=items.member_id  WHERE cat_id=? ORDER BY itemid DESC");
     $stmt->execute([$catid]);
     return $stmt->fetchAll();
 }
@@ -170,3 +163,22 @@ function getusercomments($userid)
     $stmt->execute();
     return $stmt->fetchAll();
 }
+/////////////////////////////////////////////////
+//functions to get the data of the items to show it in item page
+///i splite it to two function because the join will fial if the item has no comments
+function getitemcomments($itemid)
+{
+    global $con;
+    $stmt=$con->prepare("SELECT items.* ,comments.comment  FROM items    INNER JOIN comments ON comments.item_id=items.itemid   WHERE items.itemid=$itemid limit 1");
+    $stmt->execute();
+    return $stmt->fetchAll();
+}
+
+function getitemcatagories($itemid)
+{
+    global $con;
+    $stmt=$con->prepare("SELECT items.* , catagories.catagory_name ,users.username AS membername FROM items  INNER JOIN catagories ON catagories.catagory_id=items.cat_id INNER JOIN users ON users.userid=items.member_id  WHERE items.itemid=$itemid limit 1");
+    $stmt->execute();
+    return $stmt->fetchAll();
+}
+/////////////////////////////

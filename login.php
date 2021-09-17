@@ -39,7 +39,7 @@ if($_SERVER["REQUEST_METHOD"]=="GET")
                 ?>
                 <div class='formcontainer-signup formcontainer'>
                     <h2 class='text-center h2-text'>sign up</h2>
-                <form action="<?php echo $_SERVER["PHP_SELF"] ?>" method='POST'>
+                <form action='<?php if(empty($errors)) echo $_SERVER["PHP_SELF"] ."'method='POST'"; ?> >
                     <label for="fullname"></label>
                     <input type="text" name='fullname' class='form-control' id='fullname' placeholder='enter your fullname to appear in the profile page' autocomlete='off'>
                     <label for="username"></label>
@@ -48,7 +48,7 @@ if($_SERVER["REQUEST_METHOD"]=="GET")
                     <input type="password" name='password' id='password' class='form-control password' placeholder='enter complex password' autocomlete='off'>
                     <label for="gmail"></label>
                     <input type="email" name='gmail' class='form-control' id='gmail' placeholder='enter your gmail ' autocomlete='off'>
-                    <input type="submit" value="sign up"class="loginbutton">
+                    <input <?php if(empty($errors)) echo 'type="submit"'?> value="sign up"class="loginbutton">
                 </form>
                         <a href="index.php"><h2 class='ecommerce'>ecommerce page <i class="fas fa-store"></i></h2></a>
                     </div>
@@ -62,6 +62,14 @@ if($_SERVER["REQUEST_METHOD"]=="GET")
                     <div class="vid-container">
                         <video src="vid-1.mp4" id="video" autoplay muted loop></video>
                     </div>
+                    <div class='errors-alert'>
+                        <?php
+                        foreach($errors as $error)
+                        {
+                           echo"<div class='alert alert-danger'>".$error."</div>";
+                        }
+                        ?>
+                    </div>
                 
             <?php 
                 }
@@ -72,12 +80,13 @@ if($_SERVER["REQUEST_METHOD"]=="GET")
                 ?>
             <?php
 }
-if($_SERVER['REQUEST_METHOD']='POST')
+elseif($_SERVER['REQUEST_METHOD']='POST')
 {
+    echo "<div class='container'>";
     if(!(isset($_POST['fullname'])))
     {
-        $username      =$_POST['email'];
-        $password   =$_POST['password'];
+        $username       =$_POST['email'];
+        $password       =$_POST['password'];
         $hashedpass=sha1($password);
         $stmt=$con->prepare("SELECT userid , username , userpassword , group_id FROM users WHERE userpassword=? AND username=?");
         $stmt->execute(array($hashedpass,$username));
@@ -89,19 +98,45 @@ if($_SERVER['REQUEST_METHOD']='POST')
             $_SESSION['user']=$row['username'];
             $_SESSION['userid']=$row['userid'];
             header('location:index.php');
+            exit();
+        }
+        else
+        {
+            echo"<div class='alert alert-danger'>the user is not found</div>";
+            header('refresh:3;index.php');
+            exit();
         }
     }
     else
     {
-        $fullname=$_POST['fullname'];
-        $username=$_POST['username'];
+        $fullname=FILTER_VAR($_POST['fullname'],FILTER_SANITIZE_STRING);
+        $username=FILTER_VAR($_POST['username'],FILTER_SANITIZE_STRING);
         $password=$_POST['password'];
-        $gmail=$_POST['gmail'];
-        echo $_POST['fullname'];
-        echo$_POST['username'];
-        echo$_POST['password'];
-        echo$_POST['gmail'];
+        $gmail=FILTER_VAR($_POST['gmail'],FILTER_SANITIZE_EMAIL);
+        echo $fullname;
+        echo$username;
+        echo $password;
+        echo$gmail;
+        $errors=array();
+        if(strlen($username)<5)
+        {
+           $errors[]="the username must be more than 5 chars";
+        }
+        if($password=="")
+        {
+            $errors[]="the password must'n be empty";
+        }
+        $hashedpass=sha1($password);
+        $CheckUserPass=checkprepare('userpassword','users',$hashedpass);
+        if(($CheckUserPass == 0))
+        {
+            $stmt=$con->prepare("INSERT INTO users (username,userpassword,fullname,email,userdate) VALUES (?,?,?,?,now())");
+            $stmt->execute([$username,sha1($password),$fullname, $gmail]);
+            echo "<div class='alert alert-success'> your are under activate now</div>";
+            header("Refresh:3;index.php");
+        }
     }
+    echo"</div>";
 }
 echo"</div>";
 include $tmp.'/footer.php';
