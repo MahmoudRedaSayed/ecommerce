@@ -37,6 +37,7 @@ if(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
                                     <th>name</th>
                                     <th>price</th>
                                     <th>Added Date</th>
+                                    <th>image</th>
                                     <th>country made</th>
                                     <th>stutes</th>
                                     <th>manage</th>
@@ -52,6 +53,17 @@ if(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
                                 echo "<td>".$row['itemname']."</td>";
                                 echo "<td>".$row['price']."</td>";
                                 echo "<td>".$row['itemDate']."</td>";
+                                echo "<td><img src='";
+                                //item img
+                                if(empty($row['itemimage']))
+                                {
+                                    echo "../uploads\default\\item.png";
+                                }
+                                else
+                                {
+                                    echo"../uploads\items\\".$row['itemimage'];
+                                }
+                                echo"'/></td>";
                                 echo "<td>".$row['country_made']."</td>";
                                 echo "<td>";
                                 if($row['stutes']==1)
@@ -106,6 +118,7 @@ if(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
                                     <th>name</th>
                                     <th>price</th>
                                     <th>Added Date</th>
+                                    <th>image</th>
                                     <th>country made</th>
                                     <th>stutes</th>
                                     <th>manage</th>
@@ -121,6 +134,17 @@ if(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
                                 echo "<td>".$row['itemname']."</td>";
                                 echo "<td>".$row['price']."</td>";
                                 echo "<td>".$row['itemDate']."</td>";
+                                echo "<td><img src='";
+                                //item img
+                                if(empty($row['itemimage']))
+                                {
+                                    echo "../uploads\default\\item.png";
+                                }
+                                else
+                                {
+                                    echo"../uploads\items\\".$row['itemimage'];
+                                }
+                                echo"'/></td>";
                                 echo "<td>".$row['country_made']."</td>";
                                 echo "<td>";
                                 if($row['stutes']==1)
@@ -161,16 +185,39 @@ if(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
         echo"<h2 class='h2-text text-center'>update page</h2> <hr>";
         if($_SERVER['REQUEST_METHOD'] =="POST")
         {
-            $Error=array();
-            $name=$_POST["itemname"];
-            $des=$_POST["descripation"];
-            $price=$_POST["price"];
-            $country=$_POST["country"];
-            $stutes=$_POST["stutes"];
-            $userid=$_POST["username"];
-            $cataid=$_POST["cataname"];
-            $id=$_GET["itemid"];
-            $Error=array();
+            $Error      =array();
+            $name       =$_POST["itemname"];
+            $des        =$_POST["descripation"];
+            $price      =$_POST["price"];
+            $country    =$_POST["country"];
+            $stutes     =$_POST["stutes"];
+            $userid     =$_POST["username"];
+            $cataid     =$_POST["cataname"];
+            $id         =$_GET["itemid"];
+            $olditem    =$_POST['theoldimg'];
+            if(!($_FILES['itemimg']['error']==4))
+            {
+                $itemimg            =$_FILES['itemimg'];
+                $itemimg_name=$_FILES['itemimg']['name'];
+                $itemimg_tmpname=$_FILES['itemimg']['tmp_name'];
+                $itemimg_size=$_FILES['itemimg']['size'];
+                $itemimg_type=$_FILES['itemimg']['type'];
+                ///////////////////////////////////////////
+                // allow extations
+                $array_ex=array('png','jpg','jpeg','gif');
+                // get the extantion
+                $itemimg_ex1=explode('.', $itemimg_name);
+                $itemimg_ex2=end($itemimg_ex1);
+                $itemimg_ex=strtolower($itemimg_ex2);
+                if(!empty( $itemimg )&&!in_array($itemimg_ex,$array_ex))
+                {
+                    $Error[]="<div class='alert alert-danger'>the extation of the item image is not allowed </div>";
+                }
+                if($itemimg_size>(3*4194304))
+                {
+                    $Error[]="<div class='alert alert-danger'>the item picture can not be more than 12MB</div>";
+                }
+            }
             if(strlen($name)<5)
             {
                 $Error[]="please enter another name more than <strong>5 chars</strong> ";
@@ -185,6 +232,12 @@ if(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
             }
             if(empty($Error))
             {
+
+                
+                if(!($_FILES['itemimg']['error']==4))
+                {
+                    $item=rand(1,10000).$itemimg_name;
+                    move_uploaded_file($itemimg_tmpname,"../uploads\items\\".$item);
                     $stmt=$con->prepare("UPDATE items 
                                     SET itemname=? ,   
                                     descripation=? ,
@@ -192,9 +245,26 @@ if(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
                                     stutes=? ,
                                     country_made=?,
                                     member_id=?,
-                                    cat_id=?
+                                    cat_id=?,
+                                    itemimage=?
                                     WHERE itemid= $id");
-                    $stmt->execute(array($name,$des,$price,$stutes,$country,$userid,$cataid));
+                    $stmt->execute(array($name,$des,$price,$stutes,$country,$userid,$cataid,$item));
+                    unlink($olditem);
+                }
+                else
+                {
+                    $stmt=$con->prepare("UPDATE items 
+                                    SET itemname=? ,   
+                                    descripation=? ,
+                                    price=?,
+                                    stutes=? ,
+                                    country_made=?,
+                                    member_id=?,
+                                    cat_id=?,
+                                    itemimage=?
+                                    WHERE itemid= $id");
+                    $stmt->execute(array($name,$des,$price,$stutes,$country,$userid,$cataid,$olditem));
+                }
                     echo "<div class='alert alert-success'>the item is updated</div>";
             }
                 else
@@ -253,7 +323,16 @@ if(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
             {
                 $stmt=$con->prepare("UPDATE items SET approve=1 WHERE itemid=?");
                 $stmt->execute([$id]);
-                echo "<h1 class='text-center h2-text'>The approve Page welcome " .$_SESSION['username']."</h1>";
+                echo "<h1 class='text-center h2-text'>The approve Page welcome " ;
+                if(isset($_SESSION['username']))
+                {
+                    echo $_SESSION['username'];
+                }
+                else
+                {
+                   echo $_SESSION['user'] ;
+                } 
+                echo"</h1>";
                 echo "<div class='alert alert-success'>the item is approved</div>";
                 header("Refresh:3;items.php");
                 exit();
@@ -278,7 +357,7 @@ if(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
             ?>
             <h2 class="text-center h2-text">Add Page</h2>
             <hr>
-            <form class="container formreg" action="items.php?do=insert" method="POST">
+            <form class="container formreg" action="items.php?do=insert" method="POST" enctype="multipart/form-data">
                         <div class="descripation&name  row" >
                     <div class="  col-md col-lg col-sm-12 havespan">
                         <label  class="col-12 col-sm-12 text-center" id="name" for="name"></label>
@@ -324,7 +403,7 @@ if(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
                         ?>
                     </select>
                 </div>
-                <div class=" col-md-6 col-lg-6 col-sm-12 havespan-select row">
+                <div class=" col-md col-lg col-sm-12 havespan-select row">
                     <label class="col-12 col-sm-12 text-center" for="catagory name"></label>
                     <select class="col form-control" placeholder="catagory name" name="cataname" required="required">
                         <option value="0">...</option>
@@ -338,6 +417,12 @@ if(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
                         }
                         ?>
                     </select>
+                </div>
+                <div class='pictures havespan col-md col-lg col-sm-12'>
+                    <div class=" col-md col-lg col-sm-12 havespan">
+                            <label class="col-12 col-sm-12 text-center" for="itemimg"></label>
+                            <input class="col-12 col-sm-12 form-control"   type="file" name='itemimg' id="itemimg" placeholder="item image">
+                    </div>
                 </div>
                 </div>
                 <div class="save form-row button">
@@ -364,6 +449,19 @@ if(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
             $stutes=$_POST['stutes'];
             $catid=$_POST['cataname'];
             $username=$_POST['username'];
+            $itemimg            =$_FILES['itemimg'];
+            //the data of the img
+            $itemimg_name=$_FILES['itemimg']['name'];
+            $itemimg_tmpname=$_FILES['itemimg']['tmp_name'];
+            $itemimg_size=$_FILES['itemimg']['size'];
+            $itemimg_type=$_FILES['itemimg']['type'];
+            ///////////////////////////////////////////
+            // allow extations
+            $array_ex=array('png','jpg','jpeg','gif');
+            // get the extantion
+            $itemimg_ex1=explode('.', $itemimg_name);
+            $itemimg_ex2=end($itemimg_ex1);
+            $itemimg_ex=strtolower($itemimg_ex2);
             $name=checkprepare('itemname','items',$itemname);
             $Error=array();
             if($name!=0)
@@ -394,10 +492,20 @@ if(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
             {
                 $Error[]="please enter the member name ";
             }
+            if(!empty( $itemimg )&&!in_array($itemimg_ex,$array_ex))
+            {
+                $Error[]="<div class='alert alert-danger'>the extation of the item image is not allowed </div>";
+            }
+            if($itemimg_size>(3*4194304))
+            {
+                $Error[]="<div class='alert alert-danger'>the item picture can not be more than 12MB</div>";
+            }
             if(empty($Error))
             {
-                $stmt=$con->prepare('INSERT INTO items (itemname,descripation,price,country_made,stutes,cat_id,member_id,itemDate) VALUES (?,?,?,?,?,?,?,Now()) ');
-                $stmt->execute(array($itemname,$descripation,$price,$country,$stutes,$catid,$username));
+                $item=rand(1,10000).$itemimg_name;
+                move_uploaded_file($itemimg_tmpname,"../uploads\items\\".$item);
+                $stmt=$con->prepare('INSERT INTO items (itemname,descripation,price,country_made,stutes,cat_id,member_id,itemimage,itemDate) VALUES (?,?,?,?,?,?,?,?,Now()) ');
+                $stmt->execute(array($itemname,$descripation,$price,$country,$stutes,$catid,$username,$item));
                 echo"<div class='alert alert-success'>the item is inserted</div>";
             }
             else
@@ -426,10 +534,12 @@ if(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
             $row=$stmt->fetch();
             $count=$stmt->rowcount();
             if($count>0){
+                echo  $row['itemimage'];
             ?>
             <h2 class="text-center h2-text">edit Page</h2>
             <hr>
-            <form class="container formreg" action="items.php?do=update&itemid=<?php echo $itemid;?>" method="POST">
+            <form class="container formreg" action="items.php?do=update&itemid=<?php echo $itemid;?>" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="theoldimg" value='<?php echo $row['itemimage'];?>'>
                 <div class="des&name  row" >
                     <div class="  col-md col-lg col-sm-12 havespan">
                         <label  class="col-12 col-sm-12 text-center" id="itemname" for="itemname"></label>
@@ -474,6 +584,7 @@ if(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
                             ?>
                         </select>
                     </div>
+                    </div>
                 <div class=" col-md-6 col-lg-6 col-sm-12 havespan-select row">
                     <label class="col-12 col-sm-12 text-center" for="catagory name"></label>
                     <select class="col form-control" placeholder="catagory name" name="cataname" required="required">
@@ -489,6 +600,11 @@ if(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
                         }
                         ?>
                     </select>
+                </div>
+                <div class='pictures havespan row'>
+                    <div class=" col-md col-lg col-sm-12 havespan">
+                            <input class="col-12 col-sm-12 form-control"   type="file" name='itemimg'  id="itemimg" placeholder="item image">
+                    </div>
                 </div>
                 </div>
                 <div class="save form-row button">

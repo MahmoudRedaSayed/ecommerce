@@ -123,7 +123,7 @@ function getcat()
 function getcatitems($catid)
 {
     global $con;
-    $stmt=$con->prepare("SELECT items.* ,users.username, users.userid FROM items INNER JOIN users ON users.userid=items.member_id  WHERE cat_id=? ORDER BY itemid DESC");
+    $stmt=$con->prepare("SELECT items.* ,users.*  FROM items INNER JOIN users ON users.userid=items.member_id  WHERE cat_id=? ");
     $stmt->execute([$catid]);
     return $stmt->fetchAll();
 }
@@ -175,19 +175,36 @@ function getusercomments($userid)
 /////////////////////////////////////////////////
 //functions to get the data of the items to show it in item page
 ///i splite it to two function because the join will fial if the item has no comments
+//function getuserofcomment to get the user who write the comment
 function getitemcomments($itemid)
 {
     global $con;
-    $stmt=$con->prepare("SELECT items.* ,comments.comment  FROM items    INNER JOIN comments ON comments.item_id=items.itemid   WHERE items.itemid=$itemid limit 1");
+    $stmt=$con->prepare("SELECT items.* ,comments.comment ,comments.member_id , comments.c_id  FROM items    INNER JOIN comments ON comments.item_id=items.itemid   WHERE items.itemid=$itemid ");
     $stmt->execute();
     return $stmt->fetchAll();
 }
-
+/////////////////////////////////
+//the second version of the function to deal with the comments and replies
+function getuserofcomment($userid,$table)
+{
+    global $con;
+    $stmt=$con->prepare("SELECT * FROM users    INNER JOIN $table ON $table.member_id=users.userid   WHERE $table.member_id=$userid limit 1");
+    $stmt->execute();
+    return $stmt->fetchAll();
+}
 function getitemcatagories($itemid)
 {
     global $con;
-    $stmt=$con->prepare("SELECT items.* , catagories.catagory_name ,users.username AS membername FROM items  INNER JOIN catagories ON catagories.catagory_id=items.cat_id INNER JOIN users ON users.userid=items.member_id  WHERE items.itemid=$itemid limit 1");
+    $stmt=$con->prepare("SELECT items.* , catagories.catagory_name , users.*   FROM items  INNER JOIN catagories ON catagories.catagory_id=items.cat_id INNER JOIN users ON users.userid=items.member_id  WHERE items.itemid=$itemid limit 1");
     $stmt->execute();
     return $stmt->fetchAll();
 }
-/////////////////////////////
+///////////////////////////////////////
+//function to get the replyes of the comments
+function getthereplies($com_id,$itemid,$memeberid)
+{
+    global $con;
+    $stmt=$con->prepare("SELECT * FROM replycomments  WHERE item_id= ?AND member_id=?AND com_id=?");
+    $stmt->execute([$itemid,$memeberid,$com_id]);
+    return $stmt->fetchAll();
+}

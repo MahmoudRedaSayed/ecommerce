@@ -138,11 +138,92 @@ iF(isset($_SESSION["username"])||$_SESSION["usergroupid"]==1)
                             echo '<h2 class="text-center h2-text">There is no unactive comments</h2>';
                         }
                     }
+            echo"<a class='btn btn-success' href='comments.php?do=Add'><i class='fas fa-location-arrow'></i>Add comment</a>";
+
             ?>
     </div>
     <?php
     }
     // the end of the manage page
+    // the start of the add page
+    elseif($do=='Add')
+    {    
+        echo"<div class='container edit'>";
+        ?>
+        <h2 class="text-center h2-text">Add Page welcome </h2>
+        <hr>
+        <form class="container formreg" action="comments.php?do=insert" method="POST">
+            <div class="user&name  row" >
+                <div class="  col-md col-lg col-sm-12 havespan">
+                    <label  class="col-12 col-sm-12 text-center" id="comment" for="comment"></label>
+                    <textarea class="col-12 col-sm-12 form-control"  type="text" name='comment' id="comment" placeholder="comment" autocomplete="off" ></textarea>
+                </div>
+                <div class="  col-md col-lg col-sm-12 havespan">
+                    <label  class="col-12 col-sm-12 text-center" id="Approve" for="Approve"></label>
+                    <input class="col-12 col-sm-12 form-control"  type="text" name='Approve' id="Approve" placeholder="Approve" autocomplete="off" >
+                </div>
+            </div>
+            <div class=" col-md-6 col-lg-6 col-sm-12 havespan-select row">
+                    <label class="col-12 col-sm-12 text-center" id='item' for="item"></label>
+                    <select class="col form-control" placeholder="item name" name="item" id='item' required="required">
+                        <option value="0">...</option>
+                        <?php
+                        $stmt=$con->prepare('SELECT * FROM items');
+                        $stmt->execute();
+                        $items=$stmt->fetchAll();
+                        foreach($items as $item)
+                        {
+                            echo '<option value="'.$item['itemid'].'">'.$item['itemname'].'</option>';
+                        }
+                        ?>
+                    </select>
+                </div>
+            <div class="save form-row button">
+                <input type="submit" class="btn btn-primary col-md-2" value="save">
+            </div>
+        </form>
+        <?php
+        echo "<div/>";
+    }
+    // the end of Add comment
+    elseif($do=='insert')
+    {
+        echo"<div class='container'>";
+        if($_SERVER['REQUEST_METHOD']=="POST")
+        {
+            $comment        =$_POST["comment"];
+            $approve        =$_POST["Approve"];
+            $item          =$_POST["item"];
+            echo $item ;
+            echo'<h2 class="text-center h2-text">insert Page welcome </h2>';
+            // the array of the errors
+            $Error=array();
+            if($item="0")
+            {
+                $Error[]='the item should be selected';
+            }
+            //check if the user want to change the pass or not
+            if(empty($Error))
+            {
+                $stmt=$con->prepare("INSERT INTO comments (comment,approve,member_id,commentDate) VALUES (?,?,?,now())");
+                    $stmt->execute([$comment,$approve,$_SESSION['userid']]);
+                    $row=$stmt->rowcount();
+                    echo "<div class='alert alert-success'>the comment is inserted</div>";
+            }
+            else
+            {
+                foreach($Error as $error)
+                {
+                    echo "<div class='alert alert-danger>";
+                    echo $error;
+                    echo"</div>";
+                }
+            }
+            header('Refresh:5;comments.php');
+                    exit();
+        }
+        echo"</div>";
+    }
     // the start of the edit page
     elseif($do=='edit')
     {    

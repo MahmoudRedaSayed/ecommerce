@@ -29,15 +29,39 @@
             else
             {
               ?>
-                  <li> welcome <?php echo $_SESSION['user'];?></li>
                   <li><a href="logout.php">logout</a></li>
                   <?php if(checkisactive($_SESSION['userid'])==1) { ?>
-                  <li><a href="profile.php">profile</a></li>
+                    <li> <a href='profile.php?userid=<?php echo $_SESSION['userid'];?>'>
+                  <?php
+                    $row=getDataProfile($_SESSION["userid"]);
+                    echo $row[0]['fullname'];?>
+                    <img class='profileimg' src="<?php
+                    if(empty($row[0]['profileimg']))
+                    {
+                        if($row[0]['gander']==1)
+                        {
+                            echo 'uploads\default\user-icon.png';
+                        }
+                        else
+                        {
+                            echo'uploads\default\user-icon-female.jpg';
+                        }
+                    }
+                    else
+                    {
+                        echo "uploads\cover\\".$row[0]['profileimg'] ;
+                    }
+                    ?>
+                    " alt="">
+                    </a>
+                   </li>
+                  <li><a href="profile.php?userid=<?php echo $_SESSION['userid']?>&#items">My items</a></li>
+                  <li><a href="profile.php?userid=<?php echo $_SESSION['userid']?>&#comments">My comments</a></li>
                   <?php
                   }
                   ?>
                   <?php if(checkisadmin($_SESSION['userid'])==1) { ?>
-                  <li><a href="admin\dashed.php">control page</a></li>
+                  <li><a href="admin\dashed.php">Admin page</a></li>
               <?php
                   }
                   

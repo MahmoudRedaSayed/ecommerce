@@ -10,12 +10,15 @@ if($_SERVER["REQUEST_METHOD"]=='GET')
         <h2 class='h2-text '><?php echo $catname;?></h2> <hr>
         <?php
         $row=getcatitems($catid);
+        $count=0;
         if(!empty($row))
         {
             echo "<div class='container items'>";
             foreach($row as $catitems)
             {
-                echo "<div class='item'>";
+                if($catitems['approve']==1)
+                {
+                    echo "<div class='item'>";
                 echo "<div class='itemimage'><img src='uploads\\";
                 if(empty($catitems['itemimage']))
                 {
@@ -28,15 +31,42 @@ if($_SERVER["REQUEST_METHOD"]=='GET')
                 echo"'/>";
                 echo "<div class='user-item'>";
                 echo "<p class='text-center'>published by </p>";
-                echo "<a href='profile.php?userid=".$catitems['userid']."'><i class='fa fa-user'></i>";
-                if($catitems['username']==$_SESSION['user'])
+                echo "<a href='profile.php?userid=".$catitems['userid']."'>";
+                ?>
+                    <img class='profileimg' src="<?php
+                    if(empty($catitems['profileimg']))
+                    {
+                        if($catitems['gander']==1)
+                        {
+                            echo 'uploads\default\user-icon.png';
+                        }
+                        else
+                        {
+                            echo'uploads\default\user-icon-female.jpg';
+                        }
+                    }
+                    else
+                    {
+                        echo "uploads\cover\\".$catitems['profileimg'] ;
+                    }
+                    ?>
+                    " alt="">
+                <?php
+                if(isset($_SESSION['userid']))
+                {
+                    if($catitems['userid']==$_SESSION['userid'])
                     {
                         echo "you";
                     }
                     else
                     {
-                        echo $catitems['username'];
+                        echo $catitems['fullname'];
                     }
+                }
+                else
+                {
+                    echo $catitems['fullname'];
+                }
                 echo"</a>";
                 echo "<a class='more-detials' href='item.php?itemid=";
                 echo $catitems['itemid']."&itemname=".$catitems['itemname'];
@@ -76,8 +106,17 @@ if($_SERVER["REQUEST_METHOD"]=='GET')
                 echo"</div>";
                 echo"</div>";
                 echo"</div>";
+                }
+                else
+                {
+                    $count++;
+                }
             }
             echo"</div>";
+            if($count!=0)
+            {
+                echo "<h2 class='h2-text'>there's ".$count." under control</h2>";
+            }
         }
         else
         {

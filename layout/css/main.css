@@ -30,6 +30,27 @@ body{
     font-weight: bold;
     text-align: center;
 }
+/* catagory page */
+.profileimg{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+}
+/* item page */
+.show_item_data .item-data.profileimg{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+}
+/* /////////////////////////////////// */
 /* the start of the nav bar */
 .new-nav{
     display: flex;
@@ -39,6 +60,15 @@ body{
     color: white;
     margin-bottom: 0;
     border-bottom: 1px solid white;
+}
+.new-nav img{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
 }
 .new-nav a{
     text-decoration: none;
@@ -105,7 +135,7 @@ body{
 .items .item  .itemimage{
     position: relative;
 }
-.items .item  .itemimage img{
+.items .item  .itemimage>img{
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -494,6 +524,20 @@ body{
 }
 /* the enc of the profile page */
 /* the start of item page */
+/* the main class */
+.user{
+    color: var(--maincolor);
+    text-decoration: none;
+}
+.user:hover{
+    text-decoration:underline;
+}
+.commentdate{
+    position:absolute;
+    right: 10px;
+    top: 10px;
+}
+/* /////////////// */
 .formreg{
     display: flex;
     flex-direction: column;
@@ -560,6 +604,11 @@ body{
     color:#3e94ce ;
     text-transform: capitalize;
 }
+.show_item_data .the-data>div a{
+    font-size: 20px;
+    color:black ;
+    text-decoration: none;
+}
 .show_item_data .the-data>div span{
     color: black;
     font-size: 18px;
@@ -570,7 +619,7 @@ body{
     justify-content: center;
     align-items: center;
 }
-.show_item_data .item-data img{
+.show_item_data .item-data  .itemimg>img{
     width: 100%;
     height: 300px;
     border-radius: 10px;
@@ -581,6 +630,9 @@ body{
 }
 .item-comments{
     background-color: white;
+    display: flex;
+    flex-direction: column ;
+    gap: 20px;
     width: 100%;
     border-radius: 10px;
     -webkit-border-radius: 10px;
@@ -617,6 +669,11 @@ body{
     border-top-color: transparent;
     border-bottom-color: transparent;
 }
+.item-comments .comment .reply{
+    position: absolute;
+    right: 5%;
+    bottom: 1%;
+}
 .nocomment-item{
     width: 100%;
     display: flex;
@@ -624,7 +681,7 @@ body{
     justify-content: center;
     align-items: center;
     background-color: white;
-    margin-top: 40px;
+    margin: 40px 0;
     border-radius: 10px ;
     -webkit-border-radius: 10px ;
     -moz-border-radius: 10px ;
@@ -642,6 +699,63 @@ body{
     -moz-border-radius: 50%;
     -ms-border-radius: 50%;
     -o-border-radius: 50%;
+}
+.buttons-item{
+    margin: 40px 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+.addcomment-button{
+    margin: 50px 0;
+}
+.addcomment-button input[type='submit']{
+    background-color: #3e94ce;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin-top: 10px;
+    border-radius: 10px ;
+    -webkit-border-radius: 10px ;
+    -moz-border-radius: 10px ;
+    -ms-border-radius: 10px ;
+    -o-border-radius: 10px ;
+}
+.replycomment{
+    display: none;
+}
+.replycomment input[type='submit']{
+    margin-top:20px;
+}
+.replies{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.dontshow{
+    display: none;
+}
+.replies .replytocomment{
+    background-color: #3e94ce;
+    max-width: 400px;
+    margin-left: 30px;
+    color: white;
+    position:relative;
+    padding:10px;
+    border-bottom-right-radius:20px;
+    border-bottom-left-radius:10px;
+    border-top-left-radius:20px;
+    border-top-right-radius:10px
+}
+.replies .replytocomment::before{
+    content:"";
+    position: absolute;
+    top: 10px;
+    left: -21px;
+    border: 12px solid #3e94ce;
+    border-left-color: transparent;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
 }
 @media(max-width:768px){
     .show_item_data .item-data{

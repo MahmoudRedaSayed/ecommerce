@@ -5,24 +5,51 @@ var userAttribute=document.querySelectorAll("input[type='text'] ,  input[type='p
     videos=document.querySelectorAll(".controls .vid-btn"),
     video=document.querySelector("#video");
 var index;
-console.log(userAttribute);
-userAttribute.forEach((user, index) => {
-    if(user.getAttribute('type')!='hidden'&&user.getAttribute('type')!='submit')
-    {
-        user.onfocus=(function(){
-            userlabels[index].innerHTML=user.getAttribute("placeholder");
-            user.setAttribute("datatext",user.getAttribute("placeholder"));
-            user.setAttribute("placeholder",'');
-    });
-    user.onblur=(function(){
-        userlabels[index].innerHTML="";
-        user.setAttribute("placeholder",user.getAttribute("datatext"));
-    });
-    }
-});
 videos.forEach(btn=>{
     btn.onclick= ()=>{
         document.querySelector(".controls .active").classList.remove("active");
         btn.classList.add("active");
         video.setAttribute("src",btn.getAttribute("data-scr"));
 }});
+// /////////////////////////////////
+// function to reply on the comments
+var replybtns=document.querySelectorAll('#replybtn'),
+    replyblocks=document.querySelectorAll('#replycomment');
+    var index;
+replybtns.forEach((replybtn, index) => {
+    replybtn.onclick=()=>{
+        if(replyblocks[index].style.display=="none")
+            {
+                replyblocks[index].style.display="block";
+                replybtn.innerHTML='unreply';
+            }
+            else
+            {
+                replyblocks[index].style.display="none";
+                replybtn.innerHTML='reply';
+            }
+    }
+});
+////////////////////////////////////////
+// function to replies on the comments
+var repliesbtns=document.querySelectorAll('#repliesbtn'),
+    repliesblocks=document.querySelectorAll('#replies');
+    var index;
+    console.log(repliesbtns);
+    console.log(repliesblocks);
+repliesbtns.forEach((replybtn, index) => {
+    replybtn.onclick=()=>{
+        if(repliesblocks[index].style.display=="none")
+            {
+                repliesblocks[index].classList.add('replies');
+                repliesblocks[index].style.display="flex";
+                replybtn.innerHTML='hide replies';
+            }
+            else
+            {
+                repliesblocks[index].classList.remove('replies');
+                repliesblocks[index].style.display="none";
+                replybtn.innerHTML='show replies';
+            }
+    }
+});

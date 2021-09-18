@@ -96,7 +96,9 @@ elseif($_SERVER['REQUEST_METHOD']='POST')
         if($count>0)
         {
             $_SESSION['user']=$row['username'];
+            $_SESSION['fullname']=$row['fullname'];
             $_SESSION['userid']=$row['userid'];
+            $_SESSION['profileimg']=$row['profileimg'];
             $_SESSION['usergroupid']=$row['group_id'];
             header('location:index.php');
             exit();
