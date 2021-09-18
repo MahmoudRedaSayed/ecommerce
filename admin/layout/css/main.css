@@ -25,6 +25,15 @@ body{
     font-family: 'Nunito', sans-serif;
     font-weight: bold;
 }
+.profileimg{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+}
 /* the main class to the link add */
 a>i{
     display: inline;

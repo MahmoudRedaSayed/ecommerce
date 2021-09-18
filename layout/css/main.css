@@ -55,6 +55,7 @@ body{
 .new-nav{
     display: flex;
     justify-content: space-around;
+    flex-wrap: wrap;
     align-items: center;
     background-color: var(--maincolor);
     color: white;
@@ -468,6 +469,18 @@ body{
 .profile-page .user-items .items{
     display: flex;
     justify-content: space-evenly;
+}
+.profile-page .user-items .items .item{
+    background-color: #333;
+    position: relative;
+}
+.profile-page .user-items .items .item .unapproved{
+    position: absolute;
+    background-color: #e74c3c;
+    top: 50%;
+    left: 50%;
+    padding: 5px;
+    transform: translate(-50%, -50%);
 }
 .profile-page .user-items a{
     margin: 10px 0;

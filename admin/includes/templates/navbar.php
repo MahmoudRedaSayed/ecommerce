@@ -25,14 +25,29 @@
         </li>
         <li class="nav-item dropdown nav-right">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Mahmoud
-          </a>
+          <img class='profileimg' src="<?php
+                    if(empty($_SESSION['profileimg']))
+                    {
+                        if($_SESSION['gander']==1)
+                        {
+                            echo '../uploads\default\user-icon.png';
+                        }
+                        else
+                        {
+                            echo'../uploads\default\user-icon-female.jpg';
+                        }
+                    }
+                    else
+                    {
+                        echo "../uploads\cover\\".$_SESSION['profileimg'] ;
+                    }
+                  ?>
+          "><?php echo $_SESSION['fullname'];?></a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
           <li><a class="dropdown-item" href="../index.php">visit shop</a></li>
-            <li><a class="dropdown-item" href="members.php?do=edit&userid=<?php echo $_SESSION['userid'];?>">Edit Profile</a></li>
-            <li><a class="dropdown-item" href="#">settings</a></li>
+            <li><a class="dropdown-item" href="../profile.php?userid=<?php echo $_SESSION['userid'];?>"> Profile</a></li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="logout.php">logout</a></li>
+            <li><a class="dropdown-item" href="../logout.php">logout</a></li>
           </ul>
         </li>
       </ul>

@@ -88,7 +88,7 @@ elseif($_SERVER['REQUEST_METHOD']='POST')
         $username       =$_POST['email'];
         $password       =$_POST['password'];
         $hashedpass=sha1($password);
-        $stmt=$con->prepare("SELECT userid , username , userpassword , group_id FROM users WHERE userpassword=? AND username=?");
+        $stmt=$con->prepare("SELECT * FROM users WHERE userpassword=? AND username=?");
         $stmt->execute(array($hashedpass,$username));
         // to bring the data
         $row=$stmt->fetch();
@@ -100,6 +100,7 @@ elseif($_SERVER['REQUEST_METHOD']='POST')
             $_SESSION['userid']=$row['userid'];
             $_SESSION['profileimg']=$row['profileimg'];
             $_SESSION['usergroupid']=$row['group_id'];
+            $_SESSION['gander']=$row['gander'];
             header('location:index.php');
             exit();
         }

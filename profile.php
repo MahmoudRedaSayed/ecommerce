@@ -71,7 +71,11 @@ if($_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET['userid']))
                 {
                     echo "<div class='item'>";
                     echo"<a class='btn btn-primary' href='catagories.php?catid=".$item["cat_id"]. "&catname=".$item["catagory_name"]."'>".$item["itemname"]."</a>";
-                    echo"<a class='btn btn-success' href='item.php?itemid=".$item["itemid"]."&itemname=".$item["itemname"]."'>".$item["itemname"]."</a>";
+                    if($item["approve"]!=1)
+                    {
+                        echo"<div class='unapproved'>unapproved yet</div>";
+                    }
+                    echo"<a class='btn btn-success' href='item.php?itemid=".$item["itemid"]."&itemname=".$item["itemname"]."'>".$item["itemname"]." page</a>";
                     echo"</div>";
                 }
             }

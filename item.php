@@ -139,164 +139,182 @@ elseif(isset($_SESSION['user'])&&$_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET[
     $itemid=$_GET['itemid'];
     $comments_row=getitemcomments($itemid);
     $catas_member_row=getitemcatagories($itemid);
+    $accept=0;
     if(!empty($comments_row)||!empty($catas_member_row))
-    {  
-        if(!empty($catas_member_row))
+    {  if(isset($catas_member_row[0]['approve']))
         {
-            ?>
-                <div class='show_item_data'>
-                    <h2 class=h2-text><?php echo $catas_member_row[0]['itemname'];?></h2>
-                    <hr>
-                    <div class="item-data">
-                    <div class='the-data'>
-                        <?php 
-                        if(isset($_SESSION['userid']))
-                        {
-                            if($catas_member_row[0]['userid']!=$_SESSION['userid'])
-                            {
-                                ?>
-                            <div><i class='fa fa-user'></i> published by : <a href='profile.php?userid=<?php echo $catas_member_row[0]['userid'];?>'><span>
-                            <img class='profileimg' src="<?php
-                            if(empty($catas_member_row[0]['profileimg']))
-                            {
-                                if($catas_member_row[0]['gander']==1)
-                                {
-                                    echo 'uploads\default\user-icon.png';
-                                }
-                                else
-                                {
-                                    echo'uploads\default\user-icon-female.jpg';
-                                }
-                            }
-                            else
-                            {
-                                echo "uploads\cover\\".$catas_member_row[0]['profileimg'] ;
-                            }
-                            ?>
-                            " alt="">
-                            <?php echo $catas_member_row[0]['fullname']?></span></a></div>
-                                <?php
-                            }
-                        }
-                        ?>
-                        <div><i class="fas fa-tags"></i>catagories : <span><?php echo$catas_member_row[0]['catagory_name']?></span> </div>
-                        <div> <i class="fas fa-audio-description"></i>item descripation : <span><?php echo$catas_member_row[0]['descripation'] ?></span></div>
-                        <div> <i class="fas fa-globe-asia"></i>country made : <span><?php echo$catas_member_row[0]['country_made'] ?></span></div>
-                        <div> <i class="fas fa-hand-holding-usd"></i> item price : <span>$<?php echo$catas_member_row[0]['price'] ?></span></div>
-                        <div><i class="fas fa-calendar-week"></i>item date : <span><?php echo$catas_member_row[0]['itemDate'] ?></span></div>
-                        <div><i class="fas fa-clock"></i> days ago : <span><?php
-                        $interval=date_diff(new DateTime(date('y-m-d')),new DateTime($catas_member_row[0]['itemDate']));
-                        echo $interval->d; 
-                        ?> days</span></div>
-                    </div>
-                    <div class='itemimg'>
-                            <?php if(empty($catas_member_row[0]['itemimage']))
-                            {
-                                $path="default\\item.png";
-                            }
-                            else
-                            {
-                                $path="items\\".$catas_member_row[0]['itemimage'];
-                            } 
-                            ?>
-                            <img src="uploads\<?php echo $path;?>"alt="">
-                    </div>
-                    </div>
-                </div>
-            <?php
-        }
-        if(isset($_SESSION['userid']))
-        {
-            if($catas_member_row[0]['userid']==$_SESSION['userid'])
+            if($catas_member_row[0]['approve']==1)
             {
-                ?>
-                <div class='buttons-item'>
-                    <a class='btn btn-success' href="item.php?do=edit&itemid=<?php echo $catas_member_row[0]['itemid'];?>"><i class='fa fa-edit'></i> edit item</a>
-                    <a class='btn btn-danger' href="item.php?do=delete&itemid=<?php echo $catas_member_row[0]['itemid'];?>"><i class='fas fa-trash-alt'></i> edit Delete</a>
-                </div>
-                <?php
+                $accept=1;
             }
         }
-        if(!empty($comments_row))
+        elseif(isset($comments_row[0]['approve']))
         {
-            ?>
-            <div class="item-comments">
-            <h3 class='h3'> the comments on the item <i class="fa fa-comments"></i> </h3><hr>
-        <?php
-        if(!empty($comments_row))
-        {
-            foreach($comments_row as $comment)
+            if($catas_member_row[0]['approve']==1)
             {
-                echo "<div class='comment'>";
-                $row=getuserofcomment($comment['member_id'],"comments");
-                echo "<a class='user' href='profile.php?userid=".$row[0]['userid']."'>".$row[0]['fullname']."</a>";
-                echo "<div class='commentdate'><i class='fas fa-calendar-week'></i>".$row[0]['commentDate']."</div>";
-                echo"<p>".$comment["comment"]."</p>";
-                echo "<div class='reply'><a class='btn btn-primary ' id='replybtn'>reply</a></div>";
-                echo "<a class='btn btn-primary ' id='repliesbtn'>show replies</a>";
-                echo"</div>";
-                ?>
-                <div class=' dontshow' id='replies'>
-                    
-                    <?php
-                    $replies=getthereplies($comment['c_id'],$itemid,$_SESSION['userid']);
-                    if(!empty($replies))
-                    {
-                        foreach($replies as $reply)
-                        {
-                            $row=getuserofcomment($reply['member_id'],"replycomments");
-                            echo "<div class='replytocomment'>";
-                            echo "<a class='user' href='profile.php?userid=".$row[0]['userid']."'>".$row[0]['fullname']."</a>";
-                            echo "<div class='commentdate'><i class='fas fa-calendar-week'></i>".$row[0]['commentDate']."</div>";
-                            echo"<p>".$reply["reply"]."</p>";
-                            echo" </div>";
-                        }
-                    }
-                    else
-                    {
-                        echo"<div class='alert alert-danger replytocomment'>there is no replyies yet</div>";
-                    }
-                    
+                $accept=1;
+            }
+        }
+        if($accept==1)
+        {
+            if(!empty($catas_member_row))
+            {
                     ?>
-                </div>
-                <div class='replycomment' id='replycomment'>
-                <form action="replycomments.php?itemid=<?Php echo $itemid;?>&comid=<?Php echo $comment['c_id'];?>" method='POST'>
-                    <textarea name="reply" id="comment"  class='form-control'></textarea>
-                    <input type="submit" class='btn btn-primary' value='post'>
-                </form>
-        </div>
-                <?php
+                        <div class='show_item_data'>
+                            <h2 class=h2-text><?php echo $catas_member_row[0]['itemname'];?></h2>
+                            <hr>
+                            <div class="item-data">
+                            <div class='the-data'>
+                                <?php 
+                                if(isset($_SESSION['userid']))
+                                {
+                                    if($catas_member_row[0]['userid']!=$_SESSION['userid'])
+                                    {
+                                        ?>
+                                        <div><i class='fa fa-user'></i> published by : <a href='profile.php?userid=<?php echo $catas_member_row[0]['userid'];?>'><span>
+                                        <img class='profileimg' src="<?php
+                                        if(empty($catas_member_row[0]['profileimg']))
+                                        {
+                                            if($catas_member_row[0]['gander']==1)
+                                            {
+                                                echo 'uploads\default\user-icon.png';
+                                            }
+                                            else
+                                            {
+                                                echo'uploads\default\user-icon-female.jpg';
+                                            }
+                                        }
+                                        else
+                                        {
+                                            echo "uploads\cover\\".$catas_member_row[0]['profileimg'] ;
+                                        }
+                                    ?>
+                                    " alt="">
+                                    <?php echo $catas_member_row[0]['fullname']?></span></a></div>
+                                        <?php
+                                    }
+                                }
+                                ?>
+                                <div><i class="fas fa-tags"></i>catagories : <span><?php echo$catas_member_row[0]['catagory_name']?></span> </div>
+                                <div> <i class="fas fa-audio-description"></i>item descripation : <span><?php echo$catas_member_row[0]['descripation'] ?></span></div>
+                                <div> <i class="fas fa-globe-asia"></i>country made : <span><?php echo$catas_member_row[0]['country_made'] ?></span></div>
+                                <div> <i class="fas fa-hand-holding-usd"></i> item price : <span>$<?php echo$catas_member_row[0]['price'] ?></span></div>
+                                <div><i class="fas fa-calendar-week"></i>item date : <span><?php echo$catas_member_row[0]['itemDate'] ?></span></div>
+                                <div><i class="fas fa-clock"></i> days ago : <span><?php
+                                $interval=date_diff(new DateTime(date('y-m-d')),new DateTime($catas_member_row[0]['itemDate']));
+                                echo $interval->d; 
+                                ?> days</span></div>
+                            </div>
+                            <div class='itemimg'>
+                                    <?php if(empty($catas_member_row[0]['itemimage']))
+                                    {
+                                        $path="default\\item.png";
+                                    }
+                                    else
+                                    {
+                                        $path="items\\".$catas_member_row[0]['itemimage'];
+                                    } 
+                                    ?>
+                                    <img src="uploads\<?php echo $path;?>"alt="">
+                            </div>
+                            </div>
+                        </div>
+                    <?php
             }
-        }
-        ?>
-        <div class='addcomment-button'>
-                <form action="comment.php?itemid=<?Php echo $itemid ;?>" method='POST'>
-                    <textarea name="comment" id="comment"  class='form-control'></textarea>
-                    <input type="submit" class='btn' value='post'>
-                </form>
-        </div>
-    </div>
+                if(isset($_SESSION['userid']))
+                {
+                    if($catas_member_row[0]['userid']==$_SESSION['userid'])
+                    {
+                        ?>
+                        <div class='buttons-item'>
+                            <a class='btn btn-success' href="item.php?do=edit&itemid=<?php echo $catas_member_row[0]['itemid'];?>"><i class='fa fa-edit'></i> edit item</a>
+                            <a class='btn btn-danger' href="item.php?do=delete&itemid=<?php echo $catas_member_row[0]['itemid'];?>"><i class='fas fa-trash-alt'></i> edit Delete</a>
+                        </div>
+                        <?php
+                    }
+                }
+                if(!empty($comments_row))
+                {
+                    ?>
+                    <div class="item-comments">
+                    <h3 class='h3'> the comments on the item <i class="fa fa-comments"></i> </h3><hr>
+                <?php
+                    foreach($comments_row as $comment)
+                    {
+                        echo "<div class='comment'>";
+                        $row=getuserofcomment($comment['member_id'],"comments");
+                        echo "<a class='user' href='profile.php?userid=".$row[0]['userid']."'>".$row[0]['fullname']."</a>";
+                        echo "<div class='commentdate'><i class='fas fa-calendar-week'></i>".$row[0]['commentDate']."</div>";
+                        echo"<p>".$comment["comment"]."</p>";
+                        echo "<div class='reply'><a class='btn btn-primary ' id='replybtn'>reply</a></div>";
+                        echo "<a class='btn btn-primary ' id='repliesbtn'>show replies</a>";
+                        echo"</div>";
+                        ?>
+                        <div class=' dontshow' id='replies'>
+                            
+                            <?php
+                            $replies=getthereplies($comment['c_id'],$itemid,$_SESSION['userid']);
+                            if(!empty($replies))
+                            {
+                                foreach($replies as $reply)
+                                {
+                                    $row=getuserofcomment($reply['member_id'],"replycomments");
+                                    echo "<div class='replytocomment'>";
+                                    echo "<a class='user' href='profile.php?userid=".$row[0]['userid']."'>".$row[0]['fullname']."</a>";
+                                    echo "<div class='commentdate'><i class='fas fa-calendar-week'></i>".$row[0]['commentDate']."</div>";
+                                    echo"<p>".$reply["reply"]."</p>";
+                                    echo" </div>";
+                                }
+                            }
+                            else
+                            {
+                                echo"<div class='alert alert-danger replytocomment'>there is no replyies yet</div>";
+                            }
+                            
+                            ?>
+                        </div>
+                        <div class='replycomment' id='replycomment'>
+                        <form action="replycomments.php?itemid=<?Php echo $itemid;?>&comid=<?Php echo $comment['c_id'];?>" method='POST'>
+                            <textarea name="reply" id="comment"  class='form-control'></textarea>
+                            <input type="submit" class='btn btn-primary' value='post'>
+                        </form>
+                </div>
+                        <?php
+                    }
+                ?>
+                <div class='addcomment-button'>
+                        <form action="comment.php?itemid=<?Php echo $itemid ;?>" method='POST'>
+                            <textarea name="comment" id="comment"  class='form-control'></textarea>
+                            <input type="submit" class='btn' value='post'>
+                        </form>
+                </div>
             </div>
-            <?php
+                    </div>
+                    <?php
+            }
+            else
+            {
+                ?>
+                <div class="nocomment-item">
+                    <h4 class="nocomment-item">there is no comments yet</h4>
+                    <img src="error.png" alt="">
+                    <div class='addcomment-button'>
+                        <a class='btn'> Add comment</a>
+                    </div>
+                </div>
+                    <?php
+            }
         }
         else
         {
-            ?>
-            <div class="nocomment-item">
-                <h4 class="nocomment-item">there is no comments yet</h4>
-                <img src="error.png" alt="">
-                <div class='addcomment-button'>
-                <a class='btn'> Add comment</a>
-                </div>
-            </div>
-            <?php
+            echo "<div class='h2-text'>under approvement</div>";
         }
     }
     else
     {
         echo "<div class='alert alert-danger'>there is no item with this id</div>";
     }
-    echo"</div>";
+        echo"</div>";
 }
 //the start of item edit
 
