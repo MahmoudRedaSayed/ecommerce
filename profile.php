@@ -11,6 +11,13 @@ if($_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET['userid']))
     <div class="container profile-page">
         <div class='images'>
             <div class='image1'>
+                <!-- <div class='change_cover'>
+                <a class='btn btn-primary changeCover'>change cover image</a>
+                    <form class='change_cover_form' action="profile.php?do=insertcover$userid=<?php echo $_GET["userid"];?>" method='POST'enctype="multipart/form-data">
+                        <input type="file"name='cover'>
+                        <input type="submit" name="post" value="post" id="post">
+                    </form>
+                </div> -->
                 <img class='coverimage' src="<?php
                 if(empty($row[0]['coverimg']))
                 {
@@ -30,6 +37,13 @@ if($_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET['userid']))
                 ?>" alt="">
             </div>
             <div class="image2">
+            <!-- <div class='change_profile'>
+                    <a class='btn btn-primary changeProfile'>change profile image</a>
+                    <form class='change_profile_form' action="profile.php?do=insertprofile$userid=<?php echo $_GET["userid"];?>" method='POST'enctype="multipart/form-data">
+                        <input type="file"name='profile'>
+                        <input type="submit" name="post" value="post" id="post">
+                    </form>
+            </div> -->
             <img class='personalimage' src="<?php
                 if(empty($row[0]['profileimg']))
                 {
@@ -127,9 +141,81 @@ if($_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET['userid']))
         </div>
     <?php
 }
+elseif(isset($_GET['do'])&&$_GET['do']=='insertcover'&&$_SERVER['REQUEST_METHOD']=='POST'&&isset($_GET['userid']))
+{
+    $row=getDataProfile($_GET["userid"]);
+    $oldimg=$row[0]['coverimg'];
+    $newimg=$_FILES['cover'];
+    if(!$newimg['error']==4)
+    {
+        //the data of the cover
+        $cover_name=$newimg['name'];
+        $cover_tmpname=$newimg['tmp_name'];
+        $cover_size=$newimg['size'];
+        $cover_type=$newimg['type'];
+        // allow extations
+        $array_ex=array('png','jpg','jpeg','gif');
+        $cover_ex1=explode('.', $cover_name);
+        $cover_ex2=end($cover_ex1);
+        $cover_ex=strtolower($cover_ex2);
+        if(!in_array($cover_ex,$array_ex))
+            {
+                $Error[]="<div class='alert alert-danger'>the extation of the cover is not allowed </div>";
+            }
+            if($profile_size>(3*4194304))
+            {
+                $Error[]="<div class='alert alert-danger'>the profile picture can not be more than 12MB</div>";
+            }
+            if(empty($Error))
+            {
+                // to ensure that the name of the img can not be repeated will use a random function
+                $cover=rand(1,10000).$cover_name;
+                move_uploaded_file($cover_tmpname,"uploads\cover\\".$cover);
+                $stmt=$con->prepare("UPDATE users SET coverimg=? WHERE userid=?");
+                $stmt->execute([$cover,$_GET["userid"]]);
+            }
+    }
+    header('location:'.$_SERVER['HTTP_REFERER']);
+}
+elseif(isset($_GET['do'])&&$_GET['do']=='insertprofile'&&$_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET['userid']))
+{
+    $row=getDataProfile($_GET["userid"]);
+    $oldimg=$row[0]['profileimg'];
+    $newimg=$_FILES['profile'];
+    if(!$newimg['error']==4)
+    {
+        //the data of the cover
+        $cover_name=$newimg['name'];
+        $cover_tmpname=$newimg['tmp_name'];
+        $cover_size=$newimg['size'];
+        $cover_type=$newimg['type'];
+        // allow extations
+        $array_ex=array('png','jpg','jpeg','gif');
+        $cover_ex1=explode('.', $cover_name);
+        $cover_ex2=end($cover_ex1);
+        $cover_ex=strtolower($cover_ex2);
+        if(!in_array($cover_ex,$array_ex))
+            {
+                $Error[]="<div class='alert alert-danger'>the extation of the cover is not allowed </div>";
+            }
+            if($profile_size>(3*4194304))
+            {
+                $Error[]="<div class='alert alert-danger'>the profile picture can not be more than 12MB</div>";
+            }
+            if(empty($Error))
+            {
+                // to ensure that the name of the img can not be repeated will use a random function
+                $cover=rand(1,10000).$cover_name;
+                move_uploaded_file($cover_tmpname,"uploads\cover\\".$cover);
+                $stmt=$con->prepare("UPDATE users SET coverimg=? WHERE userid=?");
+                $stmt->execute([$cover,$_GET["userid"]]);
+            }
+    }
+    header('location:'.$_SERVER['HTTP_REFERER']); 
+}
 else
 {
-    header('location:login.php');
+    // header('location:login.php');
     exit();
 }
 include $tmp."/footer.php";

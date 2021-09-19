@@ -133,7 +133,7 @@ elseif(isset($_SESSION['user'])&&$_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET[
             </form>
             <?php
 }
-elseif(isset($_SESSION['user'])&&$_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET['itemid'])&&isset($_GET['itemname']))
+elseif($_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET['itemid'])&&isset($_GET['itemname']))
 {
     echo"<div class='container'>";
     $itemid=$_GET['itemid'];
@@ -246,14 +246,18 @@ elseif(isset($_SESSION['user'])&&$_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET[
                         echo "<a class='user' href='profile.php?userid=".$row[0]['userid']."'>".$row[0]['fullname']."</a>";
                         echo "<div class='commentdate'><i class='fas fa-calendar-week'></i>".$row[0]['commentDate']."</div>";
                         echo"<p>".$comment["comment"]."</p>";
-                        echo "<div class='reply'><a class='btn btn-primary ' id='replybtn'>reply</a></div>";
+                        if(isset($_SESSION['user']))
+                        {
+                            echo "<div class='reply'><a class='btn btn-primary ' id='replybtn'>reply</a></div>";
+                        }
                         echo "<a class='btn btn-primary ' id='repliesbtn'>show replies</a>";
                         echo"</div>";
                         ?>
                         <div class=' dontshow' id='replies'>
                             
                             <?php
-                            $replies=getthereplies($comment['c_id'],$itemid,$_SESSION['userid']);
+                            $replies=getthereplies($comment['c_id'],$itemid);
+                            $users=getDataProfile($comment['member_id']);
                             if(!empty($replies))
                             {
                                 foreach($replies as $reply)
@@ -262,7 +266,7 @@ elseif(isset($_SESSION['user'])&&$_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET[
                                     echo "<div class='replytocomment'>";
                                     echo "<a class='user' href='profile.php?userid=".$row[0]['userid']."'>".$row[0]['fullname']."</a>";
                                     echo "<div class='commentdate'><i class='fas fa-calendar-week'></i>".$row[0]['commentDate']."</div>";
-                                    echo"<p>".$reply["reply"]."</p>";
+                                    echo"<p><a class='mention' href='profile.php?userid=".$users[0]['userid']."'>".$users[0]['fullname']."</a>".$reply["reply"]."</p>";
                                     echo" </div>";
                                 }
                             }
@@ -298,10 +302,20 @@ elseif(isset($_SESSION['user'])&&$_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET[
                 <div class="nocomment-item">
                     <h4 class="nocomment-item">there is no comments yet</h4>
                     <img src="error.png" alt="">
-                    <div class='addcomment-button'>
-                        <a class='btn'> Add comment</a>
-                    </div>
+                    <?php
+                    if(isset($_SESSION['user']))
+                        {
+                            ?>
                 </div>
+                            <div class='addcomment-button'>
+                                <form action="comment.php?itemid=<?Php echo $itemid ;?>" method='POST'>
+                                    <textarea name="comment" id="comment"  class='form-control'></textarea>
+                                    <input type="submit" class='btn' value='post'>
+                                </form>
+                            </div>
+                        <?php
+                        }
+                        ?>
                     <?php
             }
         }

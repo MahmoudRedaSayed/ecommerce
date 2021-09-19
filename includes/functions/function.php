@@ -201,10 +201,19 @@ function getitemcatagories($itemid)
 }
 ///////////////////////////////////////
 //function to get the replyes of the comments
-function getthereplies($com_id,$itemid,$memeberid)
+function getthereplies($com_id,$itemid)
 {
     global $con;
-    $stmt=$con->prepare("SELECT * FROM replycomments  WHERE item_id= ?AND member_id=?AND com_id=?");
-    $stmt->execute([$itemid,$memeberid,$com_id]);
+    $stmt=$con->prepare("SELECT * FROM replycomments  WHERE item_id= ?AND com_id=?");
+    $stmt->execute([$itemid,$com_id]);
+    return $stmt->fetchAll();
+}
+///////////////////////////////////////
+//function to get all items to home page
+function getAllitems()
+{
+    global $con;
+    $stmt=$con->prepare("SELECT items.* , users.* FROM items INNER JOIN users ON users.userid=items.member_id");
+    $stmt->execute();
     return $stmt->fetchAll();
 }

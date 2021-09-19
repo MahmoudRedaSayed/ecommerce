@@ -572,8 +572,8 @@ iF(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
                 // to ensure that the name of the img can not be repeated will use a random function
                 $profile=rand(1,10000).$profile_name;
                 $cover=rand(1,10000).$cover_name;
-                move_uploaded_file($profile_tmpname,"uploads\profiles\\".$profile);
-                move_uploaded_file($cover_tmpname,"uploads\cover\\".$cover);
+                move_uploaded_file($profile_tmpname,"../uploads\profiles\\".$profile);
+                move_uploaded_file($cover_tmpname,"../uploads\cover\\".$cover);
                 $CheckUserPass=checkprepare('userpassword','users',sha1($password));
                 if(($CheckUserPass == 0))
                 {

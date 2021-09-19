@@ -770,6 +770,10 @@ body{
     border-top-color: transparent;
     border-bottom-color: transparent;
 }
+.mention{
+    color:blue;
+    text-decoration: underline;
+}
 @media(max-width:768px){
     .show_item_data .item-data{
         flex-direction: column;
