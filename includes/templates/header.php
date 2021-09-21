@@ -18,7 +18,7 @@
         <title><?php getTitle();?></title>
     </head>
     <body>
-        <!-- <div class="container"> -->
+        <!-- <div class="container">
           <ul class='new-nav'>
             <?php 
             if(!isset($_SESSION['user'])){
@@ -49,18 +49,20 @@
                     }
                     else
                     {
-                        echo "uploads\cover\\".$row[0]['profileimg'] ;
+                        echo "uploads\profiles\\".$row[0]['profileimg'] ;
                     }
                     ?>
                     " alt="">
                     </a>
                    </li>
+                   <?php if($_SESSION['usergroupid']!=0){ ?>
                   <li><a href="profile.php?userid=<?php echo $_SESSION['userid']?>&#items">My items</a></li>
+                  <?php }?>
                   <li><a href="profile.php?userid=<?php echo $_SESSION['userid']?>&#comments">My comments</a></li>
                   <?php
                   }
                   ?>
-                  <?php if(checkisadmin($_SESSION['userid'])==1) { ?>
+                  <?php if($_SESSION['usergroupid']==1 || $_SESSION['usergroupid']==2) { ?>
                   <li><a href="admin\dashed.php">Admin page</a></li>
               <?php
                   }
@@ -68,7 +70,7 @@
             }
             ?>
           </ul>
-        <!-- </div> -->
+        </div>
     <nav class="navbar navbar-expand-lg  ">
   <div class="container">
     <a class="navbar-brand" href="index.php">Home page</a>
@@ -90,5 +92,41 @@
     </ul>
     </div>
 </div>
+</nav> -->
+<!-- the start of the nav bar  -->
+<nav class="navbar">
+<div class=container>
+  <div class='logo'>
+    <img src="logo.png" alt="logo">
+  </div>
+  <div class='links' id='links'>
+    <ul>
+      <li><a href="index.php">home</a></li>
+      <li><a href="shop.php">shop</a></li>
+      <li> <a href="">contact us</a> </li>
+      <?php if(isset($_SESSION['usergroupid'])&&$_SESSION['usergroupid']!=0){?>
+      <li> <a href="admin/dashed.php">Admin page</a> </li>
+      <?php } ?>
+      <!-- <li></li> -->
+    </ul>
+  </div>
+  <?php if(isset($_SESSION['userid'])) {?>
+  <div class='user'>
+  <ul>
+    <li>
+        <a href=""><i class="fas fa-shopping-cart"></i></a>
+    </li>
+    <li>
+        <a href=""><i class="far fa-heart"></i></a>
+    </li>
+    <li>
+        <a href="profile.php?userid=<?php echo $_SESSION['userid']?>"><i class="far fa-user"></i></a>
+    </li>
+  </ul>
+  </div>
+  <?php } ?>
+  <i class="fas fa-bars" id='bars'></i> 
+</div>
 </nav>
+<!-- the end of the nav bar  -->
  

@@ -53,3 +53,14 @@ repliesbtns.forEach((replybtn, index) => {
             }
     }
 });
+var bars=document.getElementById('bars');
+bars.onclick=()=>{
+    if(document.getElementById('links').style.display!='none')
+    {
+        document.getElementById('links').style.display='none'
+    }
+    else
+    {
+        document.getElementById('links').style.display='block';
+    }
+}

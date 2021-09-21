@@ -101,6 +101,7 @@ elseif($_SERVER['REQUEST_METHOD']='POST')
             $_SESSION['profileimg']=$row['profileimg'];
             $_SESSION['usergroupid']=$row['group_id'];
             $_SESSION['gander']=$row['gander'];
+            $_SESSION['regstatus']=$row['regstatus'];
             header('location:index.php');
             exit();
         }

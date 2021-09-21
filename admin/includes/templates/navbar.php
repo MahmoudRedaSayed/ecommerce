@@ -39,7 +39,7 @@
                     }
                     else
                     {
-                        echo "../uploads\cover\\".$_SESSION['profileimg'] ;
+                        echo "../uploads\profiles\\".$_SESSION['profileimg'] ;
                     }
                   ?>
           "><?php echo $_SESSION['fullname'];?></a>

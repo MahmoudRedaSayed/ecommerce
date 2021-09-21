@@ -92,27 +92,27 @@ elseif(isset($_SESSION['user'])&&$_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET[
             <form class="container formreg" action="item.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden"value=<?php echo $_GET['catid']; ?> name='cataname'>
                 <div class="descripation&name  row" >
-                    <div class="  col-md col-lg col-sm-12 havespan">
+                    <div class="  col col col-sm-12 havespan">
                         <label  class="col-12 col-sm-12 text-center" id="name" for="name"></label>
                         <input class="col-12 col-sm-12 form-control"  type="text" name='name' id="name" placeholder="name of the item" autocomplete="off" required="required">
                     </div>
-                    <div class=" col-md col-lg col-sm-12 havespan">
+                    <div class=" col col col-sm-12 havespan">
                         <label class="col-12 col-sm-12 text-center" for="descripation"></label>
                         <input class="col-12 col-sm-12 form-control"  type="text" name='descripation' id="descripation" placeholder="descripation of the item" autocomplete="off" required="required">
                     </div>
                 </div>
                 <div class="price&country havespan row">
-                    <div class=" col-md col-lg col-sm-12 havespan">
+                    <div class=" col col col-sm-12 havespan">
                         <label class="col-12 col-sm-12 text-center" for="price"></label>
                         <input class="col-12 col-sm-12 form-control"   type="text" name='price' id="price" placeholder="price" autocomplete="off" required='required'>
                     </div>
-                    <div class=" col-md col-lg col-sm-12 havespan">
+                    <div class=" col col col-sm-12 havespan">
                         <label class="col-12 col-sm-12 text-center" for="country"></label>
                         <input class="col-12 col-sm-12 form-control"  type="text" name='country' id="country" placeholder="country of made" autocomplete="off" required="required">
                     </div>
                 </div>
                 <div class="row stutes">
-                    <div class="  col-md-6 col-lg-6 col-sm-12 havespan">
+                    <div class="  col col col-sm-12 havespan">
                     <label class="col-12 col-sm-12 text-center" for="stutes"></label>
                         <select class="col form-control" placeholder="stutes" id="stutes" name="stutes" required="required">
                             <option value="0">...</option>
@@ -123,12 +123,12 @@ elseif(isset($_SESSION['user'])&&$_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET[
                     </div>
                 </div>
                 <div class='pictures havespan row'>
-                    <div class=" col-md col-lg col-sm-12 havespan">
+                    <div class=" col col col-sm-12 havespan">
                             <input class="col-12 col-sm-12 form-control"   type="file" name='itemimg' id="itemimg" placeholder="item image">
                     </div>
                 </div>
-                <div class="save form-row button">
-                    <input type="submit" class="btn btn-primary col-md-2" value="save">
+                <div class=" form-row button">
+                    <button type='submit' class='additem'>Add product</button>
                 </div>
             </form>
             <?php
@@ -228,7 +228,18 @@ elseif($_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET['itemid'])&&isset($_GET['i
                         ?>
                         <div class='buttons-item'>
                             <a class='btn btn-success' href="item.php?do=edit&itemid=<?php echo $catas_member_row[0]['itemid'];?>"><i class='fa fa-edit'></i> edit item</a>
-                            <a class='btn btn-danger' href="item.php?do=delete&itemid=<?php echo $catas_member_row[0]['itemid'];?>"><i class='fas fa-trash-alt'></i> edit Delete</a>
+                            <a class='btn btn-danger' href="item.php?do=delete&itemid=<?php echo $catas_member_row[0]['itemid'];?>"><i class='fas fa-trash-alt'></i> Delete item</a>
+                        </div>
+                        <?php
+                    }
+                    else
+                    {
+                        ?>
+                        <div class='addorder'>
+                            <form action="order.php?itemid=<?php echo $catas_member_row[0]['itemid'];?>&do=addorder" method='POST'>
+                                <input type="number" name='num' placeholder="1">
+                                <button type='submit' ><i class="fas fa-cart-arrow-down"></i> Add Order</button>
+                            </form>
                         </div>
                         <?php
                     }
@@ -246,7 +257,7 @@ elseif($_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET['itemid'])&&isset($_GET['i
                         echo "<a class='user' href='profile.php?userid=".$row[0]['userid']."'>".$row[0]['fullname']."</a>";
                         echo "<div class='commentdate'><i class='fas fa-calendar-week'></i>".$row[0]['commentDate']."</div>";
                         echo"<p>".$comment["comment"]."</p>";
-                        if(isset($_SESSION['user']))
+                        if(isset($_SESSION['user'])&&$_SESSION['regstatus']==1)
                         {
                             echo "<div class='reply'><a class='btn btn-primary ' id='replybtn'>reply</a></div>";
                         }
@@ -285,6 +296,8 @@ elseif($_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET['itemid'])&&isset($_GET['i
                 </div>
                         <?php
                     }
+                    if($_SESSION['regstatus']==1)
+                    {
                 ?>
                 <div class='addcomment-button'>
                         <form action="comment.php?itemid=<?Php echo $itemid ;?>" method='POST'>
@@ -295,6 +308,7 @@ elseif($_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET['itemid'])&&isset($_GET['i
             </div>
                     </div>
                     <?php
+                    }
             }
             else
             {
@@ -453,27 +467,27 @@ elseif(isset($_SESSION['user'])&&isset($_GET['do']))
             <input type="hidden" name='theoldimg' value="<?php echo $catas_member_row[0]['itemimage']; ?>">
             <input type="hidden" name='itemid' value='<?php echo $itemid; ?>'>
                 <div class="descripation&name  row" >
-                    <div class="  col-md col-lg col-sm-12 havespan">
+                    <div class="  col col col-sm-12 havespan">
                         <label  class="col-12 col-sm-12 text-center" id="itemname" for="itemname"></label>
                         <input class="col-12 col-sm-12 form-control"  type="text" value="<?php echo $catas_member_row[0]['itemname']; ?>" name='itemname' id="itemname" placeholder="name of the item" autocomplete="off" >
                     </div>
-                    <div class=" col-md col-lg col-sm-12 havespan">
+                    <div class="  col col col-sm-12 havespan">
                         <label class="col-12 col-sm-12 text-center" for="descripation"></label>
                         <input class="col-12 col-sm-12 form-control"  type="text" name='descripation' value="<?php echo $catas_member_row[0]['descripation']; ?>" id="descripation" placeholder="descripation of the item" autocomplete="off" >
                     </div>
                 </div>
                 <div class="price&country havespan row">
-                    <div class=" col-md col-lg col-sm-12 havespan">
+                    <div class="  col col col-sm-12 havespan">
                         <label class="col-12 col-sm-12 text-center" for="price"></label>
                         <input class="col-12 col-sm-12 form-control"   type="text" name='price' value="<?php echo $catas_member_row[0]['price']; ?>" id="price" placeholder="price" autocomplete="off" >
                     </div>
-                    <div class=" col-md col-lg col-sm-12 havespan">
+                    <div class="  col col col-sm-12 havespan">
                         <label class="col-12 col-sm-12 text-center" for="country"></label>
                         <input class="col-12 col-sm-12 form-control"  type="text" name='country' value="<?php echo $catas_member_row[0]['country_made']; ?>" id="country" placeholder="country of made" autocomplete="off" >
                     </div>
                 </div>
                 <div class="row stutes">
-                <div class=" col-md col-lg col-sm-12 havespan-select row">
+                <div class="  col col col-sm-12 havespan-select row">
                 <label class="col-12 col-sm-12 text-center" for="stutes"></label>
                         <select class="col form-control" placeholder="stutes" name="stutes" >
                             <option <?php if ( $catas_member_row[0]['stutes']==1)echo "selected ";?>value='1' >new</option>
@@ -481,7 +495,7 @@ elseif(isset($_SESSION['user'])&&isset($_GET['do']))
                             <option  <?php if ( $catas_member_row[0]['stutes']==3)echo "selected ";?>value='3'>old</option>
                         </select>
                     </div>
-                    <div class=" col-md col-lg col-sm-12 havespan-select row">
+                    <div class="  col col col-sm-12 havespan-select row">
                     <label class="col-12 col-sm-12 text-center" for="catagory name"></label>
                     <select class="col form-control" placeholder="catagory name" name="cataname" >
                         <?php
@@ -499,12 +513,12 @@ elseif(isset($_SESSION['user'])&&isset($_GET['do']))
                 </div>
                 </div>
                 <div class='pictures havespan row'>
-                    <div class=" col-md col-lg col-sm-12 havespan">
+                    <div class="  col col col-sm-12 havespan">
                             <input class="col-12 col-sm-12 form-control"   type="file" name='itemimg'  id="itemimg" placeholder="item image">
                     </div>
                 </div>
                 <div class="save form-row button">
-                    <input type="submit" class="btn btn-primary col-md-2" value="save">
+                    <button class='additem'>Edit product</button>
                 </div>
             </form>
             <?php
@@ -552,27 +566,27 @@ elseif(isset($_SESSION['user']))
             <hr>
             <form class="container formreg" action="item.php" method="POST" enctype="multipart/form-data">
                 <div class="descripation&name  row" >
-                    <div class="  col-md col-lg col-sm-12 havespan">
+                    <div class="  col col col-sm-12 havespan">
                         <label  class="col-12 col-sm-12 text-center" id="name" for="name"></label>
                         <input class="col-12 col-sm-12 form-control"  type="text" name='name' id="name" placeholder="name of the item" autocomplete="off" required="required">
                     </div>
-                    <div class=" col-md col-lg col-sm-12 havespan">
+                    <div class=" col col col-sm-12 havespan">
                         <label class="col-12 col-sm-12 text-center" for="descripation"></label>
                         <input class="col-12 col-sm-12 form-control"  type="text" name='descripation' id="descripation" placeholder="descripation of the item" autocomplete="off" required="required">
                     </div>
                 </div>
                 <div class="price&country havespan row">
-                    <div class=" col-md col-lg col-sm-12 havespan">
+                    <div class=" col col col-sm-12 havespan">
                         <label class="col-12 col-sm-12 text-center" for="price"></label>
                         <input class="col-12 col-sm-12 form-control"   type="text" name='price' id="price" placeholder="price" autocomplete="off" required='required'>
                     </div>
-                    <div class=" col-md col-lg col-sm-12 havespan">
+                    <div class=" col col col-sm-12 havespan">
                         <label class="col-12 col-sm-12 text-center" for="country"></label>
                         <input class="col-12 col-sm-12 form-control"  type="text" name='country' id="country" placeholder="country of made" autocomplete="off" required="required">
                     </div>
                 </div>
                 <div class="row stutes">
-                    <div class="  col-md col-lg col-sm-12 havespan">
+                    <div class="  col col col-sm-12 havespan">
                     <label class="col-12 col-sm-12 text-center" for="stutes"></label>
                         <select class="col form-control" placeholder="stutes" id="stutes" name="stutes" required="required">
                             <option value="0">...</option>
@@ -581,7 +595,7 @@ elseif(isset($_SESSION['user']))
                             <option value="3">old</option>
                         </select>
                     </div>
-                    <div class="  col-md col-lg col-sm-12 havespan">
+                    <div class="  col col col-sm-12 havespan">
                         <label class="col-12 col-sm-12 text-center" for="catagory name"></label>
                         <select class="col form-control" placeholder="catagory name" id="catagory name" name="cataname" required="required">
                             <option value="0">...</option>
@@ -598,13 +612,13 @@ elseif(isset($_SESSION['user']))
                     </div>
                 </div>
                 <div class='pictures havespan row'>
-                    <div class=" col-md col-lg col-sm-12 havespan">
+                    <div class=" col col col-sm-12 havespan">
                             <label class="col-12 col-sm-12 text-center" for="itemimg"></label>
                             <input class="col-12 col-sm-12 form-control"   type="file" name='itemimg' id="itemimg" placeholder="item image">
                     </div>
                 </div>
                 <div class="save form-row button">
-                    <input type="submit" class="btn btn-primary col-md-2" value="save">
+                    <button class='additem'>Add product</button>
                 </div>
             </form>
             <?php
@@ -615,4 +629,5 @@ else
     header("refresh:2;index.php");
     exit();
 }
+echo"</div>";
 include $tmp.'/footer.php';

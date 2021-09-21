@@ -7,124 +7,115 @@ if($_SERVER["REQUEST_METHOD"]=='GET')
     $catname=str_replace('-',' ',$_GET['catname']);
     ?>
     <div class="container">
-        <h2 class='h2-text '><?php echo $catname;?></h2> <hr>
+        <div class=" newproducts">
+            <div class='head text-center'>
+                <p>our products</p>
+            </div>
+            <div class='products'>
+                <?php
+                $stmt=$con->prepare("SELECT * FROM items WHERE cat_id= $catid ");
+                $stmt->execute();
+                $row=$stmt->fetchAll();
+                if(!empty($row))
+                {
+                    foreach($row as $product)
+                    {
+                        echo "<div class='product'>";
+                        echo "<img src='uploads\items\\".$product['itemimage']."' loading='lazy'>";
+                        echo "<p>".$product['itemname']."</p>";
+                        echo "<span>".$product['price']."</span>";
+                        echo "<a href='item.php?itemid=".$product['itemid']."' class='select'>select options</a>";
+                        echo"</div>";
+                    }
+                }
+                ?>
+            </div>
+        </div>
+        <div class=" newproducts">
+    <div class='head'>
+        <p>new products</p>
+    </div>
+    <div class='products'>
         <?php
-        $row=getcatitems($catid);
-        $count=0;
+        $stmt=$con->prepare("SELECT * FROM items WHERE cat_id=$catid ORDER BY itemDate DESC limit 4 ");
+        $stmt->execute();
+        $row=$stmt->fetchAll();
         if(!empty($row))
         {
-            echo "<div class='container items'>";
-            foreach($row as $catitems)
+            foreach($row as $product)
             {
-                if($catitems['approve']==1)
-                {
-                    echo "<div class='item'>";
-                echo "<div class='itemimage'><img src='uploads\\";
-                if(empty($catitems['itemimage']))
-                {
-                    echo"default\\item.png";
-                }
-                else
-                {
-                    echo"items\\".$catitems['itemimage'];
-                }
-                echo"'/>";
-                echo "<div class='user-item'>";
-                echo "<p class='text-center'>published by </p>";
-                echo "<a href='profile.php?userid=".$catitems['userid']."'>";
-                ?>
-                    <img class='profileimg' src="<?php
-                    if(empty($catitems['profileimg']))
-                    {
-                        if($catitems['gander']==1)
-                        {
-                            echo 'uploads\default\user-icon.png';
-                        }
-                        else
-                        {
-                            echo'uploads\default\user-icon-female.jpg';
-                        }
-                    }
-                    else
-                    {
-                        echo "uploads\cover\\".$catitems['profileimg'] ;
-                    }
-                    ?>
-                    " alt="">
-                <?php
-                if(isset($_SESSION['userid']))
-                {
-                    if($catitems['userid']==$_SESSION['userid'])
-                    {
-                        echo "you";
-                    }
-                    else
-                    {
-                        echo $catitems['fullname'];
-                    }
-                }
-                else
-                {
-                    echo $catitems['fullname'];
-                }
-                echo"</a>";
-                echo "<a class='more-detials' href='item.php?itemid=";
-                echo $catitems['itemid']."&itemname=".$catitems['itemname'];
-                echo"'> more detials </a>";
+                echo "<div class='product'>";
+                echo "<img src='uploads\items\\".$product['itemimage']."' loading='lazy'>";
+                echo "<p>".$product['itemname']."</p>";
+                echo "<span>".$product['price']."</span>";
+                echo "<a href='item.php?itemid=".$product['itemid']."' class='select'>select options</a>";
                 echo"</div>";
-                echo "</div>";
-                echo"<div class='itemdata'>";
-                echo "<h2 class='itemname'>".$catitems['itemname']."</h2><hr>";
-                echo "<div class='itemslider'>";
-                echo "<p class='itemcountry'> country made : ".$catitems['country_made']."</p>";
-                echo "<p class='itemcountry'> stutes : ";
-                if($catitems['stutes']==1)
-                {
-                    echo "New";
-                }
-                elseif($catitems['stutes']==2)
-                {
-                    echo 'Used';
-                }
-                else
-                {
-                    echo 'old';
-                }
-                echo"</p>";
-                echo "<p class='itemcountry'> days ago : ";
-                /////////////////////////////another way/////////////////////////////
-                // $time=new DateTime(date('Y-m-d'));
-                // $time2=new DateTime($catitems['itemDate']);
-                // $time2=$time->diff($time2);
-                // echo $time2->d;
-                // echo date('d',$time2);
-                /////////////////////////////////////////////////////////////////////
-                $interval=date_diff(new DateTime(date('y-m-d')),new DateTime($catitems['itemDate']));
-                echo $interval->d;
-                echo"</p>";
-                echo "<p class='itemprice'>".$catitems['price']."$</p>";
-                echo"</div>";
-                echo"</div>";
-                echo"</div>";
-                }
-                else
-                {
-                    $count++;
-                }
             }
-            echo"</div>";
-            if($count!=0)
-            {
-                echo "<h2 class='h2-text'>there's ".$count." under control</h2>";
-            }
-        }
-        else
-        {
-            echo"<h2 class='h2-text text-center'>there is no items in the catagory to show it</h2>";
         }
         ?>
-         <a href="item.php?catid=<?php echo $catid;?>" class='btn btn-success'> <i class='fa fa-location-arrow'></i> Add item</a>
     </div>
+</div>
+<!-- the start of the popular  -->
+<div class=" newproducts popular">
+    <div class='head'>
+        <p>popular products</p>
+    </div>
+    <div class='products'>
+        <?php
+        $stmt=$con->prepare("SELECT * FROM items WHERE cat_id=$catid ORDER BY loves DESC limit 4 ");
+        $stmt->execute();
+        $row=$stmt->fetchAll();
+        if(!empty($row))
+        {
+            foreach($row as $product)
+            {
+                echo "<div class='product'>";
+                echo "<img src='uploads\items\\".$product['itemimage']."' loading='lazy'>";
+                echo "<p>".$product['itemname']."</p>";
+                echo "<span>".$product['price']."</span>";
+                echo "<div class='itemselection'><a href='item.php?itemid=".$product['itemid']."' class='select'>select options</a></div>";
+                echo"</div>";
+            }
+        }
+        ?>
+    </div>
+</div> 
+<!-- the end of the popular  -->
+<!-- the start of the bestrated -->
+<div class=" newproducts rated">
+    <div class='head'>
+        <p>best rated products</p>
+    </div>
+    <div class='products'>
+        <?php
+        $stmt=$con->prepare("SELECT * FROM items WHERE cat_id=$catid ORDER BY rating DESC limit 4 ");
+        $stmt->execute();
+        $row=$stmt->fetchAll();
+        if(!empty($row))
+        {
+            foreach($row as $product)
+            {
+                echo "<div class='product'>";
+                echo "<img src='uploads\items\\".$product['itemimage']."' loading='lazy'>";
+                echo "<p>".$product['itemname']."</p>";
+                echo "<span>".$product['price']."</span>";
+                echo "<div class='itemselection'><a href='item.php?itemid=".$product['itemid']."&itemname=".$product['itemname']."' class='select'>select options</a></div>";
+                echo"</div>";
+            }
+        }
+        ?>
+    </div>
+</div> 
+<?php
+if(isset($_SESSION['userid'])&&$_SESSION['usergroupid']!=0) {
+?>
+<div class='Addproduct' >
+    <a href="item.php?catid=<?php echo $catid;?>"> Add product</a>
+</div>
+<?php } ?>
+</div>
     <?php
 }
+?>
+<?php
 include $tmp."/footer.php";

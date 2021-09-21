@@ -3,7 +3,7 @@
 $pagetitle="dashed";
 $limit=5;
 session_start();
-if(isset($_SESSION['username'])||$_SESSION['usergroupid']==1)//iam not sure
+if($_SESSION['usergroupid']==1||$_SESSION['usergroupid']==2)
 {
     include 'init.php';
     ?>
@@ -82,11 +82,11 @@ if(isset($_SESSION['username'])||$_SESSION['usergroupid']==1)//iam not sure
                 </div>
                 <div class="panel-body">
                 <?php
-                    $stmt=$con->prepare("SELECT  comments.* , users.username
+                    $stmt=$con->prepare("SELECT  comments.*,users.username
                                         FROM comments
-                                        INNER JOIN users 
+                                        INNER JOIN users
                                         ON users.userid=comments.member_id
-                                        ORDER by comments.c_id
+                                        ORDER by comments.c_id DESC
                                         LIMIT $limit ");
                     $stmt->execute();
                     // fetch all data like array
@@ -97,8 +97,8 @@ if(isset($_SESSION['username'])||$_SESSION['usergroupid']==1)//iam not sure
                         foreach($row as $comment)
                         {
                             echo"<div class='com-data'>";
-                            echo "<div> ".$comment['username']."</div>";
-                            echo "<div> ".$comment['comment'];
+                            echo"<div>".$comment['username']."</div>";
+                            echo "<div class='comment'> ".$comment['comment'];
                             echo" </div>";
                             echo"<div class='com-con'>
                             <a href='comments.php?do=edit&comid=".$comment['c_id']."'> 

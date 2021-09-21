@@ -9,7 +9,7 @@ global $tmp;
 $themainadmin;
 // the start of the session
 session_start();
-iF(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
+iF(isset($_SESSION["username"])||$_SESSION['usergroupid']==1||$_SESSION['usergroupid']==2)
 {
     include "init.php";
     /*check if there is an get request or not to decide which 
@@ -21,8 +21,8 @@ iF(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
     if($do=='manage')
     {?>
     <div class="container row mr-auto choose">
-        <a class='btn btn-success ' href="members.php?choose=Allmembers">ALL Members</a>
-        <a class='btn btn-success ' href="members.php?choose=Unactivemembers">Unactive Members</a>
+        <a class='btn btn-success ' href="members.php?choose=Allmembers">ALL users</a>
+        <a class='btn btn-success ' href="members.php?choose=Unactivemembers">Unactive users</a>
         <a class='btn btn-success ' href="members.php?choose=Admins">Admins</a>
     </div>
     <div class="container manage">
@@ -30,7 +30,7 @@ iF(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
             $choose=(isset($_GET['choose']))?$_GET['choose']:'Allmembers';
                 if($choose=='Allmembers'){
                      // preparing the data of the users expacting the admin by using the group_id
-                     $stmt=$con->prepare("SELECT * from users WHERE group_id!=1");
+                     $stmt=$con->prepare("SELECT * from users WHERE group_id!=1 AND group_id!=2");
                         $stmt->execute();
                      // fetch all data like array
                         $data=$stmt->fetchAll();
@@ -39,7 +39,7 @@ iF(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
                         if($num!=0)
                         {
                             ?>
-                            <h2 class="text-center h2-text">The Data Of The All Members</h2>
+                            <h2 class="text-center h2-text">The Data Of The All users</h2>
                             <hr>    
                             <!-- the table to show the data of the users -->
                             <table class="table table-dark">
@@ -47,12 +47,15 @@ iF(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
                                 <tr>
                                     <th>ID</th>
                                     <th>username</th>
-                                    <th>email</th>
+                                    <th>gmail</th>
                                     <th>fullname</th>
+                                    <th>relkind</th>
                                     <th>Date</th>
                                     <th>profile picture</th>
                                     <th>cover picture</th>
+                                    <?php if($_SESSION['usergroupid']==1) {?>
                                     <th>manage</th>
+                                    <?php }?>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -65,6 +68,16 @@ iF(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
                                 echo "<td>".$user['username']."</td>";
                                 echo "<td>".$user['email']."</td>";
                                 echo "<td>".$user['fullname']."</td>";
+                                echo "<td>";
+                                if($user['group_id']=='0' )
+                                {
+                                    echo "user";
+                                }
+                                else
+                                {
+                                    echo "trader";
+                                }
+                                echo"</td>";
                                 echo "<td>".$user['userdate']."</td>";
                                 echo "<td><img src='";
                                 //profile img
@@ -103,11 +116,11 @@ iF(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
                                 }
                                 echo"'/></td>";
                                 // the links the lead to the delet or edit pages
-                                echo "<td class='row'><a class='edit btn btn-success col' href='members.php?do=edit&userid=".$user['userid']."'><i class='fas fa-user-edit'></i> Edit</a><a class='delete btn btn-danger col' id='delete' href='members.php?do=delete&userid=".$user['userid']."'><i class='fas fa-trash-alt'></i>Delete</a>";
-                                if($user['regstatus']!=1)
+                                if($_SESSION['usergroupid']==1)
                                 {
-                                    echo "<a class='edit btn btn-primary col' href='members.php?do=Active&userid=".$user['userid']."'><i class='fas fa-user-lock'></i> Active</a>";
-                                }
+                                    echo "<td class='row'><a class='edit btn btn-success col' href='members.php?do=edit&userid=".$user['userid']."'><i class='fas fa-user-edit'></i> Edit</a><a class='delete btn btn-danger col' id='delete' href='members.php?do=delete&userid=".$user['userid']."'><i class='fas fa-trash-alt'></i>Delete</a>";
+                                    echo "</td>";
+                                }                                
                                 echo "</td>";
                                 echo"</tr>";
                             }
@@ -123,7 +136,7 @@ iF(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
                 elseif($choose=='Unactivemembers')
                 {
                     // preparing the data of the users expacting the admin by using the group_id
-                    $stmt=$con->prepare("SELECT * from users WHERE group_id!=1 AND regstatus!=1");
+                    $stmt=$con->prepare("SELECT * from users WHERE group_id!=1 AND group_id!=2 AND regstatus!=1");
                     $stmt->execute();
                     // fetch all data like array
                     $data=$stmt->fetchAll();
@@ -139,8 +152,9 @@ iF(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
                                 <tr>
                                     <th>ID</th>
                                     <th>username</th>
-                                    <th>email</th>
+                                    <th>gmail</th>
                                     <th>fullname</th>
+                                    <th>relkind</th>
                                     <th>Date</th>
                                     <th>profile picture</th>
                                     <th>cover picture</th>
@@ -157,6 +171,16 @@ iF(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
                                 echo "<td>".$user['username']."</td>";
                                 echo "<td>".$user['email']."</td>";
                                 echo "<td>".$user['fullname']."</td>";
+                                echo "<td>";
+                                if($user['group_id']=='0' )
+                                {
+                                    echo "user";
+                                }
+                                else
+                                {
+                                    echo "trader";
+                                }
+                                echo"</td>";
                                 echo "<td>".$user['userdate']."</td>";
                                 echo "<td><img src='";
                                 //profile img
@@ -164,16 +188,16 @@ iF(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
                                 {
                                     if($user['gander']==1)
                                     {
-                                        echo "uploads\default\\user-icon.png";
+                                        echo "../uploads\default\\user-icon.png";
                                     }
                                     else
                                     {
-                                        echo "uploads\default\\user-icon-female.jpg";
+                                        echo "../uploads\default\\user-icon-female.jpg";
                                     }
                                 }
                                 else
                                 {
-                                    echo"uploads\profiles\\".$user['profileimg'];
+                                    echo"../uploads\profiles\\".$user['profileimg'];
                                 }
                                 echo"'/></td>";
                                 //cover img
@@ -182,20 +206,23 @@ iF(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
                                 {
                                     if($user['gander']==1)
                                     {
-                                        echo "uploads\default\\user-icon.png";
+                                        echo "../uploads\default\\user-icon.png";
                                     }
                                     else
                                     {
-                                        echo "uploads\default\\user-icon-female.jpg";
+                                        echo "../uploads\default\\user-icon-female.jpg";
                                     }
                                 }
                                 else
                                 {
-                                    echo"uploads\cover\\".$user['coverimg'];
+                                    echo"../uploads\cover\\".$user['coverimg'];
                                 }
                                 echo"'/></td>";
                             // the links the lead to the delet or edit pages
+                            if($_SESSION['usergroupid']==1)
+                            {
                                 echo "<td class='row'><a class='edit btn btn-success col' href='members.php?do=edit&userid=".$user['userid']."'><i class='fas fa-user-edit'></i> Edit</a><a class='delete btn btn-danger col' id='delete' href='members.php?do=delete&userid=".$user['userid']."'><i class='fas fa-trash-alt'></i>Delete</a>";
+                            }
                                 echo "<a class='edit btn btn-primary col' href='members.php?do=Active&userid=".$user['userid']."'><i class='fas fa-user-lock'></i> Active</a>";
                                 echo "</td>";
                                 echo"</tr>";
@@ -210,7 +237,8 @@ iF(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
                     elseif($choose=='Admins')
                 {
                     // preparing the data of the users expacting the admin by using the group_id
-                    $stmt=$con->prepare("SELECT * from users WHERE group_id=1 AND regstatus=1 AND userid!=?");
+                    //the admin should be active be owner
+                    $stmt=$con->prepare("SELECT * from users WHERE group_id=2  AND userid!=?");
                     $stmt->execute([$_SESSION['userid']]);
                     // fetch all data like array
                     $data=$stmt->fetchAll();
@@ -225,36 +253,32 @@ iF(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
                                 <thead>
                                 <tr>
                                     <th>ID</th>
+                                    <?php if($_SESSION['usergroupid']==1){
+                                        ?>
                                     <th>username</th>
-                                    <th>email</th>
+                                    <?php } ?>
+                                    <th>gmail</th>
                                     <th>fullname</th>
                                     <th>Date</th>
                                     <th>profile picture</th>
                                     <th>cover picture</th>
+                                    <?php if($_SESSION['usergroupid']==1){
+                                        ?>
                                     <th>manage</th>
+                                    <?php } ?>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <?php
-                                $max=$data[0]['userid'];
-                                foreach($data as $user)
-                                {
-                                    if($max>$user['userid'])
-                                    {
-                                        $max=$user['userid'];
-                                    }
-                                }
-                                $themainadmin=$max;
-                                if($themainadmin>$_SESSION['userid'])
-                                {
-                                    unset($themainadmin);
-                                }
                             //by using the for loop iterat on the array and fill the rows
                             foreach($data as $user)
                             {
                                 echo"<tr>";
                                 echo "<td>".$user['userid']."</td>";
+                                if($_SESSION['usergroupid']==1)
+                                {
                                 echo "<td>".$user['username']."</td>";
+                                }
                                 echo "<td>".$user['email']."</td>";
                                 echo "<td>".$user['fullname']."</td>";
                                 echo "<td>".$user['userdate']."</td>";
@@ -295,24 +319,11 @@ iF(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
                                 }
                                 echo"'/></td>";
                             // the links the lead to the delet or edit pages
-                            if(isset($themainadmin))
-                            {
-                                if($user['userid']!=$themainadmin)
-                                {
-                                    echo "<td class='row'><a class='edit btn btn-success col' href='members.php?do=edit&userid=".$user['userid']."'><i class='fas fa-user-edit'></i> Edit</a><a class='delete btn btn-danger col' id='delete' href='members.php?do=delete&userid=".$user['userid']."'><i class='fas fa-trash-alt'></i>Delete</a>";
-                                    echo "</td>";
-                                }
-                                else
-                                {
-                                    echo "<td><h4>the main Admin you can not manage him</h4></td>";
-                                }
-                            }
-                            else
+                            if($_SESSION['usergroupid']==1)
                             {
                                 echo "<td class='row'><a class='edit btn btn-success col' href='members.php?do=edit&userid=".$user['userid']."'><i class='fas fa-user-edit'></i> Edit</a><a class='delete btn btn-danger col' id='delete' href='members.php?do=delete&userid=".$user['userid']."'><i class='fas fa-trash-alt'></i>Delete</a>";
-                                    echo "</td>";
+                                echo "</td>";
                             }
-                            
                                 echo"</tr>";
                             }
                             echo " </tbody></table>";
@@ -334,7 +345,7 @@ iF(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
         $count=$stmt->rowcount();
         if($count>0)
         {?>
-        <h2 class="text-center h2-text">Edite Page welcome <?php echo $_SESSION['username'];?></h2>
+        <h2 class="text-center h2-text">Edite Page welcome <?php echo $_SESSION['user'];?></h2>
         <hr>
         <form class="container formreg" action="members.php?do=update" method="POST">
             <input type="hidden" name="userid" value="<?php echo $userid; ?>" />
@@ -359,6 +370,36 @@ iF(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
                     <input class="col-12 col-sm-12 form-control" value="<?php echo $row['email'];?>"  type="email" name='email' id="email" placeholder="email" autocomplete="off" required="required">
                 </div>
             </div>
+            <div class=" col-md col-lg col-sm-12 havespan">
+                        <label class="col-12 col-sm-12 text-center" for="relation">relation</label>
+                        <div class='row vis-box'>
+                            <div class="col text-center">
+                                    <input type="radio" name='relation' id='admin' value='2' <?php if($row['group_id']==2){echo "checked";}?> >
+                                    <label for="admin">Admin</label>
+                            </div>
+                            <div class="col text-center">
+                                    <input type="radio" name='relation'id='trader' value='3' <?php if($row['group_id']==3){echo "checked";}?>>
+                                    <label for="trader">trader</label>
+                            </div>
+                            <div class="col text-center">
+                                    <input type="radio" name='relation'id='user' value='0'<?php if($row['group_id']==0){echo "checked";}?>>
+                                    <label for="user">user</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class=" col-md col-lg col-sm-12 havespan">
+                        <label class="col-12 col-sm-12 text-center" for="gander">kind</label>
+                        <div class='row vis-box'>
+                            <div class="col text-center">
+                                    <input type="radio" name='gander' id='male' value='1' <?php if($row['gander']==1){echo "checked";}?>>
+                                    <label for="male">male</label>
+                            </div>
+                            <div class="col text-center">
+                                    <input type="radio" name='gander'id='female' value='0'<?php if($row['gander']==0){echo "checked";}?>>
+                                    <label for="female">female</label>
+                            </div>
+                        </div>
+                    </div>
             <div class="save form-row button">
                 <input type="submit" class="btn btn-primary col-md-2" value="save">
             </div>
@@ -412,6 +453,36 @@ iF(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
                         <input class="col-12 col-sm-12 form-control"  type="file" name='coveriamge' id="coveriamge" placeholder="coveriamge" >
                     </div>
                 </div>
+                <div class=" col-md col-lg col-sm-12 havespan">
+                        <label class="col-12 col-sm-12 text-center" for="relation">relation</label>
+                        <div class='row vis-box'>
+                            <div class="col text-center">
+                                    <input type="radio" name='relation' id='admin' value='2' checked>
+                                    <label for="admin">Admin</label>
+                            </div>
+                            <div class="col text-center">
+                                    <input type="radio" name='relation'id='trader' value='3'>
+                                    <label for="trader">trader</label>
+                            </div>
+                            <div class="col text-center">
+                                    <input type="radio" name='relation'id='user' value='0'>
+                                    <label for="user">user</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class=" col-md col-lg col-sm-12 havespan">
+                        <label class="col-12 col-sm-12 text-center" for="gander">kind</label>
+                        <div class='row vis-box'>
+                            <div class="col text-center">
+                                    <input type="radio" name='gander' id='male' value='1' checked>
+                                    <label for="male">male</label>
+                            </div>
+                            <div class="col text-center">
+                                    <input type="radio" name='gander'id='female' value='0'>
+                                    <label for="female">female</label>
+                            </div>
+                        </div>
+                    </div>
                 <div class="save form-row button">
                     <input type="submit" class="btn btn-primary col-md-2" value="save">
                 </div>
@@ -437,8 +508,10 @@ iF(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
             $email      =$_POST["email"];
             $password   ='';
             $userid     =$_POST["userid"];
+            $relation     =$_POST["relation"];
+            $gander     =$_POST["gander"];
             // the header of the page
-            echo'<h2 class="text-center h2-text">UPDATE Page welcome '.$_SESSION['username'].'</h2>';
+            echo'<h2 class="text-center h2-text">UPDATE Page welcome '.$_SESSION['user'].'</h2>';
             // the array of the errors
             $Error=array();
             //check if the user want to change the pass or not
@@ -469,10 +542,10 @@ iF(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
                     $CheckUserPass=$stmt->rowcount();
                 if($CheckUserPass==0)
                 {
-                    $stmt=$con->prepare("UPDATE users SET username=? , fullname=? , email=? , userpassword=? WHERE userid=?");
-                    $stmt->execute([$username,$fullname,$email,$password,$userid]);
+                    $stmt=$con->prepare("UPDATE users SET username=? , fullname=? , email=? , userpassword=? , group_id=? , gander=? WHERE userid=?");
+                    $stmt->execute([$username,$fullname,$email,$password,$relation,$gander,$userid]);
                     $row=$stmt->rowcount();
-                    echo "<div class='alert alert-success'>$row updated</div>";
+                    echo "<div class='alert alert-success'>the member is updated updated</div>";
                     header('Refresh:5;members.php');
                     exit();
                 }
@@ -507,6 +580,8 @@ iF(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
             $fullname   =$_POST["fullname"];
             $email      =$_POST["email"];
             $password   =$_POST["password"];
+            $relation   =$_POST['relation'];
+            $gander     =$_POST['gander'];
             $profileimg =$_FILES['personaliamge'];
             $coverimg   =$_FILES['coveriamge'];
             // the data of the images
@@ -530,7 +605,7 @@ iF(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
             $cover_ex2=end($cover_ex1);
             $cover_ex=strtolower($cover_ex2);
             // the header of the page
-            echo'<h1 class="text-center h2-text">insert Page welcome '.$_SESSION['username'].' </h1>';
+            echo'<h1 class="text-center h2-text">insert Page welcome '.$_SESSION['user'].' </h1>';
             // the array of the errors
             $Error=array();
             //check if the user want to change the pass or not
@@ -550,11 +625,11 @@ iF(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
             {
                 $Error[]="<div class='alert alert-danger'>the email must be filled </div>";
             }
-            if(!empty( $profileimg )&&!in_array($profile_ex,$array_ex))
+            if($profileimg['error']!=4 &&!in_array($profile_ex,$array_ex))
             {
                 $Error[]="<div class='alert alert-danger'>the extation of the profile is not allowed </div>";
             }
-            if(!empty( $coverimg )&&!in_array($cover_ex,$array_ex))
+            if( $coverimg['error']!=4  &&!in_array($cover_ex,$array_ex))
             {
                 $Error[]="<div class='alert alert-danger'>the extation of the cover is not allowed </div>";
             }
@@ -570,15 +645,42 @@ iF(isset($_SESSION["username"])||$_SESSION['usergroupid']==1)
             if(empty($Error))
             {
                 // to ensure that the name of the img can not be repeated will use a random function
-                $profile=rand(1,10000).$profile_name;
-                $cover=rand(1,10000).$cover_name;
-                move_uploaded_file($profile_tmpname,"../uploads\profiles\\".$profile);
-                move_uploaded_file($cover_tmpname,"../uploads\cover\\".$cover);
-                $CheckUserPass=checkprepare('userpassword','users',sha1($password));
-                if(($CheckUserPass == 0))
+                if( $profileimg['error']!=4 )
                 {
-                    $stmt=$con->prepare("INSERT INTO users (username,userpassword,fullname,email,regstatus,userdate,profileimg,coverimg) VALUES (?,?,?,?,1,now(),?,?)");
-                    $stmt->execute([$username,sha1($password),$fullname,$email,$profile,$cover]);
+                    $profile=rand(1,10000).$profile_name;
+                    move_uploaded_file($profile_tmpname,"../uploads\profiles\\".$profile);
+                }
+                if( $coverimg['error']!=4 )
+                {
+                    $cover=rand(1,10000).$cover_name;
+                    move_uploaded_file($cover_tmpname,"../uploads\cover\\".$cover);
+                }
+                $CheckUserPass=checkprepare('userpassword','users',sha1($password));
+                if(($CheckUserPass == 0)&& $profileimg['error']!=4 && $coverimg['error']!=4 )
+                {
+                    $stmt=$con->prepare("INSERT INTO users (username,userpassword,fullname,email,regstatus,userdate,group_id,profileimg,coverimg,gander) VALUES (?,?,?,?,1,now(),?,?,?,?)");
+                    $stmt->execute([$username,sha1($password),$fullname,$email,$relation,$profile,$cover,$gander]);
+                    echo "<div class='alert alert-success'>the member is inserted</div>";
+                    header("Refresh:5;members.php");
+                }
+                elseif(($CheckUserPass == 0)&& $profileimg['error']!=4 )
+                {
+                    $stmt=$con->prepare("INSERT INTO users (username,userpassword,fullname,email,regstatus,userdate,group_id,profileimg,gander) VALUES (?,?,?,?,1,now(),?,?,?)");
+                    $stmt->execute([$username,sha1($password),$fullname,$email,$relation,$profile,$gander]);
+                    echo "<div class='alert alert-success'>the member is inserted</div>";
+                    header("Refresh:5;members.php");
+                }
+                elseif(($CheckUserPass == 0)&& $coverimg['error']!=4 )
+                {
+                    $stmt=$con->prepare("INSERT INTO users (username,userpassword,fullname,email,regstatus,userdate,group_id,coverimg) VALUES (?,?,?,?,1,now(),?,?,?)");
+                    $stmt->execute([$username,sha1($password),$fullname,$email,$relation,$coverimg,$gander]);
+                    echo "<div class='alert alert-success'>the member is inserted</div>";
+                    header("Refresh:5;members.php");
+                }
+                elseif(($CheckUserPass == 0) )
+                {
+                    $stmt=$con->prepare("INSERT INTO users (username,userpassword,fullname,email,regstatus,userdate,group_id,gander) VALUES (?,?,?,?,1,now(),?,?)");
+                    $stmt->execute([$username,sha1($password),$fullname,$email,$relation,$gander]);
                     echo "<div class='alert alert-success'>the member is inserted</div>";
                     header("Refresh:5;members.php");
                 }

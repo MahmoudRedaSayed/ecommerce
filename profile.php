@@ -1,9 +1,9 @@
 <?php
 session_start();
+// $pagetitle=$_SESSION["user"]." profile";
+include "init.php";
 if($_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET['userid']))
 {
-    // $pagetitle=$_SESSION["user"]." profile";
-    include "init.php";
     $row=getDataProfile($_GET["userid"]);
     $useritems=getuseritems($_GET["userid"]);
     $usercomments=getusercomments($_GET["userid"]);
@@ -13,7 +13,7 @@ if($_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET['userid']))
             <div class='image1'>
                 <!-- <div class='change_cover'>
                 <a class='btn btn-primary changeCover'>change cover image</a>
-                    <form class='change_cover_form' action="profile.php?do=insertcover$userid=<?php echo $_GET["userid"];?>" method='POST'enctype="multipart/form-data">
+                    <form class='change_cover_form' action="profile.php?do=insertcover&userid=<?php echo $_GET["userid"];?>" method='POST'enctype="multipart/form-data">
                         <input type="file"name='cover'>
                         <input type="submit" name="post" value="post" id="post">
                     </form>
@@ -39,7 +39,7 @@ if($_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET['userid']))
             <div class="image2">
             <!-- <div class='change_profile'>
                     <a class='btn btn-primary changeProfile'>change profile image</a>
-                    <form class='change_profile_form' action="profile.php?do=insertprofile$userid=<?php echo $_GET["userid"];?>" method='POST'enctype="multipart/form-data">
+                    <form class='change_profile_form' action="profile.php?do=insertprofile&userid=<?php echo $_GET["userid"];?>" method='POST'enctype="multipart/form-data">
                         <input type="file"name='profile'>
                         <input type="submit" name="post" value="post" id="post">
                     </form>
@@ -75,47 +75,61 @@ if($_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET['userid']))
                 <h4>join date : <span><?php echo $row[0]['userdate']; ?></h4>
             </div>
         </div>
+        <?php
+            if($row[0]['group_id']!=0)
+            {
+                ?>
         <div class="user-items"id='items'>
         <h3 class='h3'> the items of <?php echo $row[0]['fullname']; ?> <i class="fa fa-newspaper"></i> </h3><hr>
-        <div class="items">
+            <div class="items">
             <?php
-            if(!empty($useritems))
-            {
-                foreach($useritems as $item)
+                if(!empty($useritems))
                 {
-                    echo "<div class='item'>";
-                    echo"<a class='btn btn-primary' href='catagories.php?catid=".$item["cat_id"]. "&catname=".$item["catagory_name"]."'>".$item["itemname"]."</a>";
-                    if($item["approve"]!=1)
+                    foreach($useritems as $item)
                     {
-                        echo"<div class='unapproved'>unapproved yet</div>";
+                        echo "<div class='item'>";
+                        echo"<a class='btn btn-primary' href='catagories.php?catid=".$item["cat_id"]. "&catname=".$item["catagory_name"]."'>".$item["itemname"]."</a>";
+                        if($item["approve"]!=1)
+                        {
+                            echo"<div class='unapproved'>unapproved yet</div>";
+                        }
+                        echo"<a class='btn btn-success' href='item.php?itemid=".$item["itemid"]."&itemname=".$item["itemname"]."'>".$item["itemname"]." page</a>";
+                        echo"</div>";
                     }
-                    echo"<a class='btn btn-success' href='item.php?itemid=".$item["itemid"]."&itemname=".$item["itemname"]."'>".$item["itemname"]." page</a>";
-                    echo"</div>";
                 }
-            }
-            else
-            {
-                ?>
-                <div class="error404">
-                    <h4>there is no items yet</h4>
-                    <img src="error.png" alt="">
-                </div>
-                <?php
-            }
-            ?>
-            </div>
-            <?php
-            if(isset($_SESSION['userid']))
-            {
-                if($_GET['userid'] == $_SESSION['userid'])
+                else
                 {
                     ?>
-                    <a href="item.php" class='btn btn-success'> <i class='fa fa-location-arrow'></i> Add item</a>
-                    <?php
+                    <div class="error404">
+                        <h4>there is no items yet</h4>
+                        <img src="error.png" alt="">
+                    </div>
+            </div>
+            <?php
                 }
-            }
                 ?>
-        </div>
+                </div>
+                    <?php
+                if(isset($_SESSION['userid']))
+                {
+                    if($_GET['userid'] == $_SESSION['userid'])
+                    {
+                        ?>
+                        <a href="item.php" class='btn btn-success'> <i class='fa fa-location-arrow'></i> Add item</a>
+                        <?php
+                    }
+                }
+            ?>
+            </div>
+            <div class='rating'>
+                    <div>
+                    <i class="far fa-star" id='star'></i>
+                    <i class="far fa-star" id='star'></i>
+                    <i class="far fa-star" id='star'></i>
+                    </div>
+            </div>
+            <?php
+            }?>
         <div class="user-comments" id='comments'>
         <h3 class='h3'> the comments of <?php echo $row[0]['fullname']; ?> <i class="fa fa-comments"></i> </h3><hr>
             <?php
@@ -139,13 +153,36 @@ if($_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET['userid']))
                 <?php
             }?>
         </div>
+        <?php  if($_GET["userid"]==$_SESSION['userid']&&$_SESSION['usergroupid']!=0) {?>
+        <div class="orders">
+            <?php
+            $row=getorders($_SESSION['userid']);
+            if(!empty($row))
+            {
+                foreach($row as $order)
+                {
+                ?>
+                <div class='order'>
+                    <div>client:<a href='profile.php?userid=<?php echo $order['userid']?>'><?php echo $order['fullname']?></a></div>
+                    <div>date:<?php echo $order['orderDate']?></div>
+                    <div>location:<?php echo $order['userlocation']?></div>
+                    <div>useremail:<?php echo $order['email']?></div>
+                </div>
+                <?php
+                }
+            }
+            ?>
+           
+        </div>
     <?php
+        }
 }
 elseif(isset($_GET['do'])&&$_GET['do']=='insertcover'&&$_SERVER['REQUEST_METHOD']=='POST'&&isset($_GET['userid']))
 {
     $row=getDataProfile($_GET["userid"]);
     $oldimg=$row[0]['coverimg'];
     $newimg=$_FILES['cover'];
+    print_r($newimg);
     if(!$newimg['error']==4)
     {
         //the data of the cover
@@ -175,9 +212,9 @@ elseif(isset($_GET['do'])&&$_GET['do']=='insertcover'&&$_SERVER['REQUEST_METHOD'
                 $stmt->execute([$cover,$_GET["userid"]]);
             }
     }
-    header('location:'.$_SERVER['HTTP_REFERER']);
+    header('location:profile.php?userid='.$_SESSION['userid']);
 }
-elseif(isset($_GET['do'])&&$_GET['do']=='insertprofile'&&$_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET['userid']))
+elseif(isset($_GET['do'])&&$_GET['do']=='insertprofile'&&$_SERVER['REQUEST_METHOD']=='POST'&&isset($_GET['userid']))
 {
     $row=getDataProfile($_GET["userid"]);
     $oldimg=$row[0]['profileimg'];
@@ -206,12 +243,12 @@ elseif(isset($_GET['do'])&&$_GET['do']=='insertprofile'&&$_SERVER['REQUEST_METHO
             {
                 // to ensure that the name of the img can not be repeated will use a random function
                 $cover=rand(1,10000).$cover_name;
-                move_uploaded_file($cover_tmpname,"uploads\cover\\".$cover);
-                $stmt=$con->prepare("UPDATE users SET coverimg=? WHERE userid=?");
+                move_uploaded_file($cover_tmpname,"uploads\profiles\\".$cover);
+                $stmt=$con->prepare("UPDATE users SET profileimg=? WHERE userid=?");
                 $stmt->execute([$cover,$_GET["userid"]]);
             }
     }
-    header('location:'.$_SERVER['HTTP_REFERER']); 
+    header('location:profile.php?userid='.$_SESSION['userid']); 
 }
 else
 {
