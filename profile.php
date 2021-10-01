@@ -11,13 +11,13 @@ if($_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET['userid']))
     <div class="container profile-page">
         <div class='images'>
             <div class='image1'>
-                <!-- <div class='change_cover'>
-                <a class='btn btn-primary changeCover'>change cover image</a>
-                    <form class='change_cover_form' action="profile.php?do=insertcover&userid=<?php echo $_GET["userid"];?>" method='POST'enctype="multipart/form-data">
-                        <input type="file"name='cover'>
+                <div class='change_cover'>
+                <a class='changeCover' id='changecover'>change cover image</a>
+                    <form name='myForm1' class='change_cover_form' action="profile.php?do=insertcover&userid=<?php echo $_GET["userid"];?>" method='POST'enctype="multipart/form-data">
+                        <input type="file"name='cover' id='changeinput'>
                         <input type="submit" name="post" value="post" id="post">
                     </form>
-                </div> -->
+                </div>
                 <img class='coverimage' src="<?php
                 if(empty($row[0]['coverimg']))
                 {
@@ -37,13 +37,13 @@ if($_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET['userid']))
                 ?>" alt="">
             </div>
             <div class="image2">
-            <!-- <div class='change_profile'>
-                    <a class='btn btn-primary changeProfile'>change profile image</a>
-                    <form class='change_profile_form' action="profile.php?do=insertprofile&userid=<?php echo $_GET["userid"];?>" method='POST'enctype="multipart/form-data">
-                        <input type="file"name='profile'>
+            <div class='change_profile'>
+                    <a class='changeProfile' id='changeprofile'>change profile image</a>
+                    <form name='myForm2' class='change_profile_form' action="profile.php?do=insertprofile&userid=<?php echo $_GET["userid"];?>" method='POST'enctype="multipart/form-data">
+                        <input type="file"name='profile' id='changeinput'>
                         <input type="submit" name="post" value="post" id="post">
                     </form>
-            </div> -->
+            </div>
             <img class='personalimage' src="<?php
                 if(empty($row[0]['profileimg']))
                 {
@@ -115,12 +115,11 @@ if($_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET['userid']))
                     if($_GET['userid'] == $_SESSION['userid'])
                     {
                         ?>
-                        <a href="item.php" class='btn btn-success'> <i class='fa fa-location-arrow'></i> Add item</a>
+                        <a href="item.php" > <i class='fa fa-location-arrow'></i> Add item</a>
                         <?php
                     }
                 }
             ?>
-            </div>
             <div class='rating'>
                     <div>
                     <i class="far fa-star" id='star'></i>
@@ -138,7 +137,7 @@ if($_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET['userid']))
                 foreach($usercomments as $comment)
                 {
                     echo "<div class='comment'>";
-                    echo"<a>".$comment["itemname"]."</a>";
+                    echo"<a href='item.php?itemid=".$comment["itemid"]."#comments'>".$comment["itemname"]."</a>";
                     echo"<p>".$comment["comment"]."</p>";
                     echo"</div>";
                 }
@@ -153,29 +152,7 @@ if($_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET['userid']))
                 <?php
             }?>
         </div>
-        <?php  if($_GET["userid"]==$_SESSION['userid']&&$_SESSION['usergroupid']!=0) {?>
-        <div class="orders">
-            <?php
-            $row=getorders($_SESSION['userid']);
-            if(!empty($row))
-            {
-                foreach($row as $order)
-                {
-                ?>
-                <div class='order'>
-                    <div>client:<a href='profile.php?userid=<?php echo $order['userid']?>'><?php echo $order['fullname']?></a></div>
-                    <div>date:<?php echo $order['orderDate']?></div>
-                    <div>location:<?php echo $order['userlocation']?></div>
-                    <div>useremail:<?php echo $order['email']?></div>
-                </div>
-                <?php
-                }
-            }
-            ?>
-           
-        </div>
     <?php
-        }
 }
 elseif(isset($_GET['do'])&&$_GET['do']=='insertcover'&&$_SERVER['REQUEST_METHOD']=='POST'&&isset($_GET['userid']))
 {
@@ -199,7 +176,7 @@ elseif(isset($_GET['do'])&&$_GET['do']=='insertcover'&&$_SERVER['REQUEST_METHOD'
             {
                 $Error[]="<div class='alert alert-danger'>the extation of the cover is not allowed </div>";
             }
-            if($profile_size>(3*4194304))
+            if($cover_size>(3*4194304))
             {
                 $Error[]="<div class='alert alert-danger'>the profile picture can not be more than 12MB</div>";
             }
@@ -212,10 +189,12 @@ elseif(isset($_GET['do'])&&$_GET['do']=='insertcover'&&$_SERVER['REQUEST_METHOD'
                 $stmt->execute([$cover,$_GET["userid"]]);
             }
     }
-    header('location:profile.php?userid='.$_SESSION['userid']);
+    header('profile.php');
+    exit();
 }
 elseif(isset($_GET['do'])&&$_GET['do']=='insertprofile'&&$_SERVER['REQUEST_METHOD']=='POST'&&isset($_GET['userid']))
 {
+    echo"welcome";
     $row=getDataProfile($_GET["userid"]);
     $oldimg=$row[0]['profileimg'];
     $newimg=$_FILES['profile'];
@@ -235,7 +214,7 @@ elseif(isset($_GET['do'])&&$_GET['do']=='insertprofile'&&$_SERVER['REQUEST_METHO
             {
                 $Error[]="<div class='alert alert-danger'>the extation of the cover is not allowed </div>";
             }
-            if($profile_size>(3*4194304))
+            if($cover_size>(3*4194304))
             {
                 $Error[]="<div class='alert alert-danger'>the profile picture can not be more than 12MB</div>";
             }
@@ -255,5 +234,6 @@ else
     // header('location:login.php');
     exit();
 }
+echo "</div>";
 include $tmp."/footer.php";
 

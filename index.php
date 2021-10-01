@@ -114,37 +114,11 @@ $items=getAllitems();
 // echo"</div>";
 ?>
 <div class='slider'>
-    <div class='catagories_section'>
-        <div>
-            <div class='header'>
-            <i class="fas fa-bars"></i> 
-            <span>categories</span>
-            </div>
-        </div>
-        <?php
-            $stmt=$con->prepare("SELECT * FROM catagories ");
-            $stmt->execute();
-            $row=$stmt->fetchAll();
-            if(!empty($row))
-            {
-                echo "<div>";
-                echo"<ul>";
-                foreach($row as $cata)
-                {
-                    echo"<li>";
-                    echo "<a href='catagories.php?catid=". $cata['catagory_id']."&catname=".str_replace(' ','-',$cata['catagory_name'])."'>".$cata['catagory_name']."</a>";
-                    echo"</li>";
-                }
-                echo"</ul>";
-                echo"</div>";
-            }
-            ?>
-    </div>
     <div class='sreach'>
         <div>
             <!-- form of sreach cata -->
-            <form action="">
-                <input type="text"class='sreach_field' placeholder='sreach'>
+            <form action="index.php" method="POST">
+                <input type="text" name='sreach'class='sreach_field' placeholder='sreach'>
                 <div class='button'>
                     <div class='categories'>
                         <div class='cataclick'> all categories</div>
@@ -153,6 +127,33 @@ $items=getAllitems();
                     <button type='submit'><i class="fas fa-search"></i></button>
                 </div>
             </form>
+            <!-- <?php
+            if($_SERVER['REQUEST_METHOD']=="POST" && isset($_POST['sreach'])&& $_POST['sreach']!="")
+            {
+                $sreach=$_POST['sreach'];
+                // echo $sreach;
+                $stmt=$con->prepare("SELECT * FROM catagories , items");
+                $stmt->execute();
+                $row=$stmt->fetchAll();
+                if($stmt->rowcount()!=0)
+                {
+                    foreach($row as $item)
+                    {
+                        // echo"<div class='alert alert-danger'>";if(isset($item['itemname'])) {if($item['itemname'].find()}
+                        // if(isset($item['catagory_name'])) echo $item['catagory_name'];
+                        echo"</div>";
+                    }
+                }
+                else
+                {
+                    echo"<div class='alert alert-danger'>no</div>";
+                }
+                // print_r($row);
+                $_POST['sreach']="";
+                unset($sreach);
+                echo $_POST['sreach'];
+            }
+            ?> -->
             <!-- ////////////////////// -->
         </div>
         <div class='sliderimg'>

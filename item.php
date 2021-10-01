@@ -133,9 +133,9 @@ elseif(isset($_SESSION['user'])&&$_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET[
             </form>
             <?php
 }
-elseif($_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET['itemid'])&&isset($_GET['itemname']))
+elseif($_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET['itemid']))
 {
-    echo"<div class='container'>";
+    echo"<div class='container itempage'>";
     $itemid=$_GET['itemid'];
     $comments_row=getitemcomments($itemid);
     $catas_member_row=getitemcatagories($itemid);
@@ -237,7 +237,9 @@ elseif($_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET['itemid'])&&isset($_GET['i
                         ?>
                         <div class='addorder'>
                             <form action="order.php?itemid=<?php echo $catas_member_row[0]['itemid'];?>&do=addorder" method='POST'>
+                            <div>  
                                 <input type="number" name='num' placeholder="1">
+                            </div>
                                 <button type='submit' ><i class="fas fa-cart-arrow-down"></i> Add Order</button>
                             </form>
                         </div>
@@ -247,13 +249,13 @@ elseif($_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET['itemid'])&&isset($_GET['i
                 if(!empty($comments_row))
                 {
                     ?>
-                    <div class="item-comments">
+                    <div class="item-comments" id='comments'>
                     <h3 class='h3'> the comments on the item <i class="fa fa-comments"></i> </h3><hr>
                 <?php
                     foreach($comments_row as $comment)
                     {
-                        echo "<div class='comment'>";
                         $row=getuserofcomment($comment['member_id'],"comments");
+                        echo "<div class='comment'>";
                         echo "<a class='user' href='profile.php?userid=".$row[0]['userid']."'>".$row[0]['fullname']."</a>";
                         echo "<div class='commentdate'><i class='fas fa-calendar-week'></i>".$row[0]['commentDate']."</div>";
                         echo"<p>".$comment["comment"]."</p>";
@@ -261,7 +263,7 @@ elseif($_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET['itemid'])&&isset($_GET['i
                         {
                             echo "<div class='reply'><a class='btn btn-primary ' id='replybtn'>reply</a></div>";
                         }
-                        echo "<a class='btn btn-primary ' id='repliesbtn'>show replies</a>";
+                        echo "<a  id='repliesbtn'>show replies</a>";
                         echo"</div>";
                         ?>
                         <div class=' dontshow' id='replies'>
@@ -283,7 +285,7 @@ elseif($_SERVER['REQUEST_METHOD']=='GET'&&isset($_GET['itemid'])&&isset($_GET['i
                             }
                             else
                             {
-                                echo"<div class='alert alert-danger replytocomment'>there is no replyies yet</div>";
+                                echo"<div class='replytocomment'>there is no replyies yet</div>";
                             }
                             
                             ?>

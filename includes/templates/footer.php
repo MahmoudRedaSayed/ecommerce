@@ -3,7 +3,14 @@
         <div>
             <h3>my account</h3>
             <ul>
-                <li><a href='login.php'>login|signup</a></li>
+                <?php if(isset($_SESSION['user'])){?>
+                    <li><a href='logout.php'>logout</a></li>
+                <?php
+                }
+                else{
+                    ?>
+                        <li><a href='login.php'>login|signup</a></li>
+                <?php } ?>
                 <li><a href='<?php if(isset($_SESSION['userid'])){echo"profile.php?userid=" .$_SESSION['userid']; }
                 else {echo"login.php";}?>' >my cart</a></li>
                 <li><a href='<?php if(isset($_SESSION['userid'])){echo"profile.php?userid=" .$_SESSION['userid']."#wishlist"; }

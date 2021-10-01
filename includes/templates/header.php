@@ -23,7 +23,7 @@
             <?php 
             if(!isset($_SESSION['user'])){
             ?>
-            <li><a href="login.php?do=login">login|</a><a href="login.php?do=signup">signup</a></li>
+            <li><a href="login.php?do=login">login|</a><a href="login.php?do=signup">signup</a></li>f
             <?php
             }
             else
@@ -97,15 +97,18 @@
 <nav class="navbar">
 <div class=container>
   <div class='logo'>
-    <img src="logo.png" alt="logo">
+    <a href="index.php"><img src="logo.png" alt="logo"></a>
   </div>
   <div class='links' id='links'>
     <ul>
       <li><a href="index.php">home</a></li>
       <li><a href="shop.php">shop</a></li>
       <li> <a href="">contact us</a> </li>
-      <?php if(isset($_SESSION['usergroupid'])&&$_SESSION['usergroupid']!=0){?>
+      <?php if(isset($_SESSION['usergroupid'])&&$_SESSION['usergroupid']!=0&&$_SESSION['usergroupid']!=3){?>
       <li> <a href="admin/dashed.php">Admin page</a> </li>
+      <?php } ?>
+      <?php if(isset($_SESSION['usergroupid'])&&$_SESSION['usergroupid']!=0){?>
+      <li> <a href="cart.php?do=required">required orders</a> </li>
       <?php } ?>
       <!-- <li></li> -->
     </ul>
@@ -114,17 +117,36 @@
   <div class='user'>
   <ul>
     <li>
-        <a href=""><i class="fas fa-shopping-cart"></i></a>
+        <a href="cart.php?userid=<?php echo $_SESSION['userid'];?>"><i class="fas fa-shopping-cart">
+          <span class="before">
+          <?php
+          echo getuserstatics($_SESSION['userid'],"orders","client_id");
+          ?>
+          </span>
+        </i></a>
     </li>
     <li>
-        <a href=""><i class="far fa-heart"></i></a>
+        <a href="loves.php?userid=<?php echo $_SESSION['userid']?>"><i class="far fa-heart">
+        <span class="before">
+          <?php
+          echo getuserstatics($_SESSION['userid'],"loves","member_id");
+          ?>
+        </span>
+        </i></a>
     </li>
     <li>
         <a href="profile.php?userid=<?php echo $_SESSION['userid']?>"><i class="far fa-user"></i></a>
     </li>
   </ul>
   </div>
-  <?php } ?>
+  <?php }
+  else
+  {
+    ?>
+    <div class='login'><a href="login.php?do=login">login|</a><a href="login.php?do=signup">signup</a></div>
+    <?php
+  }
+  ?>
   <i class="fas fa-bars" id='bars'></i> 
 </div>
 </nav>

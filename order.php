@@ -20,7 +20,6 @@ if(isset($_SESSION['user'])&&$_SERVER['REQUEST_METHOD']=='POST'&&isset($_GET['it
         $location= $query['country'].'/' . $query['city'];
         echo $location;
         }
-        print_r($query);
         ///////////////////////////
         $stmt=$con->prepare("INSERT INTO orders (client_id,trader_id,item_id,orderDate,userlocation,num) VALUES (?,?,?,NOW(),?,?) ");
         $stmt->execute([$_SESSION['userid'],$row[0]['member_id'],$itemid,$location,$number]);

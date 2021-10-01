@@ -162,7 +162,7 @@ function getuseritems($userid)
 function getusercomments($userid)
 {
     global $con;
-    $stmt=$con->prepare("SELECT comments.* , items.itemname FROM comments   INNER JOIN items ON items.itemid=comments.item_id  WHERE comments.member_id=$userid");
+    $stmt=$con->prepare("SELECT comments.* , items.* FROM comments   INNER JOIN items ON items.itemid=comments.item_id  WHERE comments.member_id=$userid");
     $stmt->execute();
     return $stmt->fetchAll();
 }
@@ -217,6 +217,30 @@ function getorders($traderid)
 {
     global $con;
     $stmt=$con->prepare("SELECT items.* , users.* , orders.* FROM orders INNER JOIN users ON users.userid=orders.client_id INNER JOIN items ON items.itemid=orders.item_id WHERE orders.trader_id=$traderid");
+    $stmt->execute();
+    return $stmt->fetchAll();
+}
+//////////////////////////////////////////// 
+
+function getuserstatics($memberid,$table,$condtion){
+    global $con;
+    if($table=='orders')
+    {
+        $datenow=date("now");
+        $datenow=strtotime($datenow);
+        $stmt=$con->prepare("SELECT * FROM $table WHERE $condtion=$memberid  AND ArrivalDate>$datenow ");
+    }
+    else
+    {
+        $stmt=$con->prepare("SELECT * FROM $table WHERE $condtion=$memberid ");
+    }
+    $stmt->execute();
+    return $stmt->rowcount();
+}
+///////////////////////////////////////////////////
+function getuserorders($clientid,$type,$id){
+    global $con;
+    $stmt=$con->prepare("SELECT orders.* , items.* , users.*, users.username AS $type FROM orders INNER JOIN users ON users.userid=orders.$type INNER JOIN items ON items.itemid=orders.item_id WHERE orders.$id=$clientid");
     $stmt->execute();
     return $stmt->fetchAll();
 }

@@ -64,3 +64,38 @@ bars.onclick=()=>{
         document.getElementById('links').style.display='block';
     }
 }
+var cross=document.querySelector('.setarrival i'),
+    appear=document.getElementById("appear");
+console.log(appear);
+console.log(cross);
+if(appear!=null){
+    appear.onclick=()=>{
+        document.getElementById('setarrival').style.clipPath= "polygon(0 0,100% 0,100% 100%,0 100%)";
+        document.getElementById('id').setAttribute("value",appear.getAttribute('value'));
+    }
+}
+if(cross!=null)
+{
+    cross.onclick=()=>{
+        document.getElementById('setarrival').style.clipPath= "polygon(0 0,100% 0,100% 0,0 0)";
+    }
+}
+var cover=document.getElementById('changecover'),
+    profile=document.getElementById('changeprofile'),
+    inputfield=document.querySelectorAll('#changeinput');
+console.log(cover);
+console.log(inputfield);
+console.log(document.forms['myForm1']);
+cover.onclick=()=>{
+    inputfield[0].click();
+}
+// setInterval(() => {
+//     document.forms["myForm1"].submit();
+// }, 1);
+profile.onclick=()=>{
+    inputfield[1].click();
+    document.forms["myForm2"].submit();
+}
+// setInterval(() => {
+//     document.forms["myForm2"].submit();
+// }, 1);
